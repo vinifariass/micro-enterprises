@@ -1,4 +1,7 @@
+"use client";
+
 import { defaultBusinessConfig } from '@/config/business';
+import { gaWhatsApp, gaContactCTA } from '@/lib/analytics';
 
 export default function Hero() {
   const { name, slogan, description, whatsapp, calendlyUrl } = defaultBusinessConfig;
@@ -29,6 +32,7 @@ export default function Hero() {
                 href={whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => gaWhatsApp('hero_whatsapp')}
                 className="bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all transform hover:scale-105 flex items-center"
               >
                 <svg className="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 24 24">
@@ -39,6 +43,7 @@ export default function Hero() {
               
               <a
                 href="#services"
+                onClick={() => gaContactCTA('hero_services')}
                 className="bg-white hover:bg-gray-50 text-blue-600 border-2 border-blue-600 px-8 py-4 rounded-lg font-semibold text-lg transition-all transform hover:scale-105"
               >
                 Nossos Serviços
@@ -48,6 +53,7 @@ export default function Hero() {
                   href={calendlyUrl}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => gaContactCTA('hero_calendly')}
                   className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all transform hover:scale-105"
                 >
                   Agendar Chamada

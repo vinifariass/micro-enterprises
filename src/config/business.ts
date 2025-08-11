@@ -22,8 +22,8 @@ export const defaultBusinessConfig: BusinessConfig = {
       id: '1',
       name: 'Serviço Premium',
       description:
-        'Nosso serviço de maior qualidade, personalizado para suas necessidades específicas.',
-      price: 'A partir de R$ 299',
+        'Site profissional sob medida, com foco em performance, SEO e conversão. Inclui layout exclusivo, integrações essenciais (WhatsApp, Analytics, formulário), e suporte na publicação.',
+      price: 'A partir de R$ 800 por site',
     },
     {
       id: '2',

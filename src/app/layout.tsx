@@ -7,6 +7,8 @@ import ClientAnalytics from '@/components/ClientAnalytics';
 
 const inter = Inter({ subsets: ["latin"] });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://suaempresa.com.br';
+
 export const metadata: Metadata = {
   title: {
     default: defaultBusinessConfig.name,
@@ -22,11 +24,11 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://suaempresa.com.br'), // Altere para o domínio real
+  metadataBase: new URL(siteUrl),
   openGraph: {
     type: 'website',
     locale: 'pt_BR',
-    url: 'https://suaempresa.com.br', // Altere para o domínio real
+    url: siteUrl,
     title: defaultBusinessConfig.name,
     description: defaultBusinessConfig.description,
     siteName: defaultBusinessConfig.name,

@@ -9,6 +9,8 @@ import Testimonials from '@/components/Testimonials';
 import FAQ from '@/components/FAQ';
 import FloatingWhatsApp from '@/components/FloatingWhatsApp';
 import { defaultBusinessConfig } from '@/config/business';
+import LeadMagnet from '@/components/LeadMagnet';
+import MetricsShowcase from '@/components/MetricsShowcase';
 
 export default function Home() {
   return (
@@ -37,6 +39,8 @@ export default function Home() {
         <Hero />
         <About />
         <Services />
+  <MetricsShowcase />
+  <LeadMagnet />
         <Pricing />
         <Testimonials />
         <FAQ />

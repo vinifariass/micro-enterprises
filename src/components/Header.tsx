@@ -15,7 +15,8 @@ export default function Header() {
     { href: '#about', label: 'Sobre' },
     { href: '#services', label: 'Serviços' },
   { href: '#pricing', label: 'Planos' },
-    { href: '#contact', label: 'Contato' }
+  { href: '#contact', label: 'Contato' },
+  { href: '/blog', label: 'Blog' },
   ];
 
   return (

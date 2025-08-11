@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { gaLead, gaWhatsApp, gaContactCTA } from '@/lib/analytics';
 import { defaultBusinessConfig } from '@/config/business';
 
 export default function Contact() {
@@ -26,8 +27,9 @@ export default function Contact() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
-      if (!res.ok) throw new Error('Failed');
-      setSubmitStatus('success');
+  if (!res.ok) throw new Error('Failed');
+  setSubmitStatus('success');
+  gaLead(formData.email);
       setFormData({ name: '', email: '', phone: '', message: '' });
     } catch {
       setSubmitStatus('error');
@@ -82,6 +84,7 @@ export default function Contact() {
                       href={whatsappUrl}
                       target="_blank"
                       rel="noopener noreferrer"
+                      onClick={() => gaWhatsApp('contact_section_whatsapp')}
                       className="text-green-600 hover:text-green-700 font-medium"
                     >
                       Enviar mensagem →
@@ -196,13 +199,14 @@ export default function Contact() {
                     </a>
                   )}
                 </div>
-                {calendlyUrl && (
+        {calendlyUrl && (
                   <div className="mt-6">
                     <a
                       href={calendlyUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+          onClick={() => gaContactCTA('contact_section_calendly')}
+          className="inline-flex items-center bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
                     >
                       Agendar Chamada
                     </a>
