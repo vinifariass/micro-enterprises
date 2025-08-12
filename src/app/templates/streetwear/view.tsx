@@ -1,35 +1,13 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
-
-type Product = {
-  id: string;
-  name: string;
-  price: number;
-  tag?: string;
-  image?: string;
-};
+import { PRODUCTS } from './catalog';
 
 type CartItem = { id: string; qty: number };
 
-const PRODUCTS: Product[] = [
-  { id: 'tee-oversize', name: 'Oversized Tee – Preto', price: 129, tag: 'Nova' },
-  { id: 'hoodie-oversize', name: 'Hoodie Oversized – Cinza', price: 249 },
-  { id: 'af1-white', name: 'Nike Air Force 1 – White', price: 799, tag: 'Drop' },
-  { id: 'aj1-bred', name: 'Air Jordan 1 – Bred', price: 1499 },
-  { id: 'cargo', name: 'Calça Cargo – Areia', price: 199 },
-  { id: 'cap', name: 'Dad Cap – Preto', price: 99 },
-];
-
-const SWATCHES: Record<string, string[]> = {
-  'tee-oversize': ['#111827', '#9CA3AF', '#F3F4F6'],
-  'hoodie-oversize': ['#6B7280', '#111827'],
-  'af1-white': ['#F9FAFB', '#111827'],
-  'aj1-bred': ['#111827', '#DC2626'],
-  cargo: ['#D1D5DB', '#F59E0B'],
-  cap: ['#111827', '#374151'],
-};
+// (swatches removed for now; can be reintroduced under each product card)
 
 export default function StreetwearView() {
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -50,93 +28,65 @@ export default function StreetwearView() {
   const clear = () => setCart([]);
 
   return (
-    <main className="bg-white">
-      {/* Announcement bar + header */}
-      <div className="text-center text-[11px] tracking-wide bg-black text-white py-2">FRETE GRÁTIS EM COMPRAS ACIMA DE R$ 299 • TROCA FÁCIL</div>
-      <header className="sticky top-0 z-30 bg-white/90 backdrop-blur border-b">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <Link href="/templates" className="font-extrabold tracking-widest text-gray-900">STREETLAB</Link>
-          <nav className="hidden md:flex gap-6 text-sm text-gray-700">
-            <a href="#capsule" className="hover:text-black">Collabs</a>
-            <a href="#favorite" className="hover:text-black">Favorite Styles</a>
-            <a href="#sneakers" className="hover:text-black">Sneakers</a>
-            <a href="#apparel" className="hover:text-black">Apparel</a>
-          </nav>
-          <button className="relative px-3 py-1 rounded-full border text-sm" aria-label="Abrir carrinho">
-            Cart <span className="ml-2 inline-block text-xs bg-black text-white px-2 py-0.5 rounded-full">{cart.reduce((n, x) => n + x.qty, 0)}</span>
-          </button>
+    <main className="bg-white text-gray-900">
+      {/* Utility bar */}
+      <div className="bg-black text-white text-[11px] tracking-wide">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 h-8 flex items-center justify-center text-center">
+          Frete grátis para Brasil em todos os pedidos acima de R$ 600
         </div>
-      </header>
+      </div>
 
-      {/* Hero banner */}
-      <section className="relative">
-        <div className="container mx-auto px-0 sm:px-6 lg:px-8">
-          <div className="aspect-[16/7] sm:rounded-none lg:rounded-b-[2rem] bg-gray-100 border overflow-hidden" />
+      {/* Category nav */}
+      <div className="border-b sticky top-0 z-20 bg-white/95 backdrop-blur">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 h-12 hidden md:flex items-center gap-6 text-[13px]">
+          {['FEATURED','JORDAN','ADIDAS','NIKE','NEW BALANCE','ASICS','MENS','WOMENS','KIDS','APPAREL','COLLECTIBLES','BRANDS'].map((c) => (
+            <a key={c} href="#" className="hover:text-black">{c}</a>
+          ))}
+          <div className="ml-auto text-gray-500">Search</div>
         </div>
-      </section>
+      </div>
 
-      {/* Capsule rail */}
-      <section id="capsule" className="py-12">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-center text-[11px] tracking-[0.2em] font-semibold text-gray-900">SHOP THE CAPSULE</h2>
-          <div className="mt-6 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            <div className="min-w-max grid grid-flow-col auto-cols-[220px] gap-5">
-              {PRODUCTS.map((p) => (
-                <div key={p.id} className="rounded-2xl border bg-white overflow-hidden">
-                  <div className="aspect-[4/3] bg-gray-100" />
-                  <div className="p-4">
-                    <div className="text-sm text-gray-900 font-medium">{p.name}</div>
-                    <div className="text-sm text-gray-600">R$ {p.price.toFixed(2)}</div>
-                    <div className="mt-2 flex items-center gap-2">
-                      {(SWATCHES[p.id] || []).map((c) => (
-                        <span key={c} className="inline-block size-4 rounded-full border" style={{ background: c }} />
-                      ))}
-                    </div>
-                    <button onClick={() => add(p.id)} className="mt-3 w-full px-3 py-2 rounded-lg bg-black text-white text-sm font-semibold">Adicionar</button>
-                  </div>
-                </div>
-              ))}
-            </div>
+      {/* Hero heading */}
+      <section className="relative overflow-hidden">
+        <div className="h-40 sm:h-48 lg:h-56 bg-gray-900 text-white grid place-items-center">
+          <h1 className="text-4xl sm:text-5xl font-extrabold tracking-widest">STREETWEAR</h1>
+        </div>
+        <div className="bg-gray-100 py-3">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-center">
+            <button className="inline-flex items-center gap-2 px-4 py-2 rounded bg-white border text-sm">
+              <span aria-hidden>▾</span> FILTER BY
+            </button>
           </div>
         </div>
       </section>
 
-      {/* Favorite styles grid */}
-      <section id="favorite" className="py-6">
+      {/* Product grid */}
+      <section className="py-10">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-center text-xl font-bold text-gray-900">FAVORITE STYLES</h2>
-          <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {PRODUCTS.map((p) => (
-              <div key={p.id} className="rounded-2xl border bg-white overflow-hidden group">
-                <div className="aspect-[4/3] bg-gray-100" />
-                <div className="p-4">
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <div className="text-sm font-semibold text-gray-900 group-hover:text-black">{p.name}</div>
-                      <div className="text-xs text-gray-500">R$ {p.price.toFixed(2)}</div>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      {(SWATCHES[p.id] || []).slice(0, 5).map((c) => (
-                        <span key={c} className="inline-block size-3 rounded-full border" style={{ background: c }} />
-                      ))}
-                    </div>
-                  </div>
-                  <button onClick={() => add(p.id)} className="mt-3 w-full px-3 py-2 rounded-lg border text-sm font-medium hover:bg-gray-50">Adicionar</button>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-10 gap-y-14">
+            {PRODUCTS.map((p) => {
+              const isShoe = /adidas|vans|nb-480/.test(p.id);
+              return (
+              <Link href={`/templates/streetwear/${p.id}`} key={p.id} className="text-center block group">
+                <div className={(isShoe ? 'aspect-[4/3]' : 'aspect-[3/4]') + ' bg-gray-100 rounded overflow-hidden grid place-items-center'}>
+                  {p.image ? (
+                    <Image
+                      src={p.image}
+                      alt={p.name}
+                      width={isShoe ? 800 : 600}
+                      height={isShoe ? 600 : 800}
+                      sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
+                      className={'w-full h-full transition-transform duration-200 group-hover:scale-[1.02] ' + (isShoe ? 'object-contain p-4' : 'object-cover')}
+                      priority={p.id === 'tee-worldwide'}
+                    />
+                  ) : null}
                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Instagram grid */}
-      <section className="py-12">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center text-sm text-gray-700">@streetlabofficial</div>
-          <div className="mt-4 grid grid-cols-3 sm:grid-cols-6 gap-2">
-            {Array.from({ length: 12 }).map((_, i) => (
-              <div key={i} className="aspect-square bg-gray-100 rounded-lg" />
-            ))}
+                <div className="mt-3 text-xs tracking-widest text-gray-500 font-semibold" aria-label="categoria">{p.name.split('–')[0]?.trim().toUpperCase()}</div>
+                <div className="text-sm font-semibold" aria-label="nome do produto">{p.name.split('–')[1]?.trim() || p.name}</div>
+                <div className="text-xs text-gray-500">R$ {p.price.toFixed(0)}</div>
+                <button onClick={(e) => { e.preventDefault(); add(p.id); }} className="mt-3 inline-flex items-center justify-center px-4 py-2 rounded border text-sm">Adicionar</button>
+              </Link>
+            );})}
           </div>
         </div>
       </section>

@@ -4,6 +4,7 @@ import "./globals.css";
 import { defaultBusinessConfig } from '@/config/business';
 import Script from 'next/script';
 import ClientAnalytics from '@/components/ClientAnalytics';
+import ChunkReload from '@/components/ChunkReload';
 import { Suspense } from 'react';
 
 const inter = Inter({ subsets: ["latin"] });
@@ -82,6 +83,7 @@ export default function RootLayout({
   <Suspense fallback={null}>
     <ClientAnalytics />
   </Suspense>
+  <ChunkReload />
       </body>
     </html>
   );
