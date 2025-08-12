@@ -12,7 +12,7 @@ function getClient() {
     try {
       key = Buffer.from(keyB64, 'base64').toString('utf8');
     } catch (e) {
-      console.error('Failed to decode GA_SERVICE_ACCOUNT_KEY_BASE64');
+      console.error('Failed to decode GA_SERVICE_ACCOUNT_KEY_BASE64', e);
     }
   }
 
@@ -51,7 +51,7 @@ export async function GET() {
 
     const [resp] = await client.runReport({
       property: `properties/${propertyId}`,
-      dateRanges: [{ startDate: '7daysAgo', endDate: 'today' }],
+      dateRanges: [{ startDate: '7daysAgo', endDate: 'yesterday' }],
       metrics: [{ name: 'sessions' }],
     });
 

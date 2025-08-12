@@ -24,3 +24,57 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Custom animations inspired by project.md */
+@keyframes circleBlueMove {
+  0% { opacity: 0; transform: translate(200px, 75px) rotate(90deg); }
+  100% { opacity: 1; }
+}
+
+@keyframes squareRedMove {
+  0% { opacity: 0; }
+  20% { opacity: 0; transform: translate(-200px, 75px) rotate(90deg); }
+  100% { opacity: 1; }
+}
+
+@keyframes triangleGreenMove {
+  0% { opacity: 0; }
+  50% { opacity: 0; transform: translate(200px, -75px) rotate(90deg); }
+  100% { opacity: 1; }
+}
+
+.anim-circle-blue { animation: circleBlueMove 2s ease both; }
+.anim-square-red { animation: squareRedMove 2s ease both; }
+.anim-triangle-green { animation: triangleGreenMove 2s ease both; }
+
+/* In-view decorative square (services) */
+.sq-blue { opacity: 0.01; transform: translateX(125px); transition: all .8s ease; }
+.sq-blue.in-view { transform: rotate(22.5deg) translateX(0); opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-circle-blue,
+  .anim-square-red,
+  .anim-triangle-green,
+  .sq-blue { animation: none !important; transition: none !important; transform: none !important; opacity: 1 !important; }
+}
+
+/* General purpose animations for templates */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes floatSlow {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+  100% { transform: translateY(0); }
+}
+
+.fade-up { animation: fadeUp .8s ease both; }
+.float-slow { animation: floatSlow 6s ease-in-out infinite; }
+.reveal { opacity: 0; transform: translateY(16px); transition: opacity .6s ease, transform .6s ease; }
+.reveal.in-view { opacity: 1; transform: translateY(0); }
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-up, .float-slow, .reveal { animation: none !important; transition: none !important; opacity: 1 !important; transform: none !important; }
+}

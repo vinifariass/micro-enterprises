@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 
 type Metric = { label: string; value: number; target: number };
+type SessionsResponse = { ok: boolean; sessions?: number; error?: string };
 
 export default function MetricsShowcase() {
   const [metrics, setMetrics] = useState<Metric[]>([
@@ -35,11 +36,15 @@ export default function MetricsShowcase() {
     (async () => {
       try {
         const res = await fetch('/api/metrics/ga-sessions', { cache: 'no-store' });
-        const data = await res.json();
-        if (!aborted && data?.ok) {
-          setMetrics((ms) =>
-            ms.map((m) => (m.label.startsWith('Visitas') ? { ...m, target: Number(data.sessions) || 0 } : m))
-          );
+        const data: SessionsResponse = await res.json();
+        if (!aborted && data) {
+          const sessions = Number(data.sessions ?? 0);
+          setMetrics((ms) => {
+            if (!Array.isArray(ms) || ms.length === 0) return ms;
+            const copy = [...ms];
+            copy[0] = { ...copy[0], target: Number.isFinite(sessions) ? sessions : 0 };
+            return copy;
+          });
         }
       } catch (err) {
         // keep mocked 0 if request fails
