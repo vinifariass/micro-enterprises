@@ -5,7 +5,7 @@ import { gaLead, gaWhatsApp, gaContactCTA } from '@/lib/analytics';
 import { defaultBusinessConfig } from '@/config/business';
 
 export default function Contact() {
-  const { name, phone, whatsapp, email, address, socialMedia, calendlyUrl } = defaultBusinessConfig;
+  const { phone, whatsapp, email, address, socialMedia, calendlyUrl } = defaultBusinessConfig;
   
   const [formData, setFormData] = useState({
     name: '',

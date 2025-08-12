@@ -22,7 +22,7 @@ export default function LeadMagnet() {
   gaSubscribe(email);
       setEmail('');
       setName('');
-    } catch (e) {
+    } catch {
       setStatus('error');
     }
   };

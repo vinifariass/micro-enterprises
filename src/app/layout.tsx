@@ -4,6 +4,7 @@ import "./globals.css";
 import { defaultBusinessConfig } from '@/config/business';
 import Script from 'next/script';
 import ClientAnalytics from '@/components/ClientAnalytics';
+import { Suspense } from 'react';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -78,7 +79,9 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
   {children}
-  <ClientAnalytics />
+  <Suspense fallback={null}>
+    <ClientAnalytics />
+  </Suspense>
       </body>
     </html>
   );

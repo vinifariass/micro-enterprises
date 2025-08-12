@@ -34,6 +34,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ ok: true });
   } catch (e) {
-    return NextResponse.json({ ok: false, error: 'Invalid request' }, { status: 400 });
+  console.error('Contact API error', e);
+  return NextResponse.json({ ok: false, error: 'Invalid request' }, { status: 400 });
   }
 }

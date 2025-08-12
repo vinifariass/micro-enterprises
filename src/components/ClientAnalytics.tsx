@@ -9,9 +9,9 @@ export default function ClientAnalytics() {
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    const url = pathname + (searchParams?.toString() ? `?${searchParams.toString()}` : '');
+    const sp = searchParams?.toString() ?? '';
+    const url = pathname + (sp ? `?${sp}` : '');
     gaPageview(url);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname, searchParams]);
 
   return null;

@@ -40,7 +40,8 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json({ ok: true });
-  } catch (e) {
+  } catch (err) {
+    console.error('Subscribe API error', err);
     return NextResponse.json({ ok: false, error: 'Invalid request' }, { status: 400 });
   }
 }
