@@ -11,8 +11,9 @@
   "dependencies": {
     "next": "15.4.6",
     "react": "19.1.0",
-    "react-dom": "19.1.0",
-    "resend": "^6.0.1"
+  "react-dom": "19.1.0",
+  "resend": "^6.0.1",
+  "@google-analytics/data": "^4.3.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

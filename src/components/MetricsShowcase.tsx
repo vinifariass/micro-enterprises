@@ -6,7 +6,7 @@ type Metric = { label: string; value: number; target: number };
 
 export default function MetricsShowcase() {
   const [metrics, setMetrics] = useState<Metric[]>([
-    { label: 'Visitas recentes', value: 0, target: 178 },
+    { label: 'Visitas recentes (7 dias)', value: 0, target: 0 },
     { label: 'Leads gerados', value: 0, target: 32 },
     { label: 'Cliques no WhatsApp', value: 0, target: 54 },
     { label: 'Conversões (sites)', value: 0, target: 7 },
@@ -27,6 +27,28 @@ export default function MetricsShowcase() {
       raf = requestAnimationFrame(step);
     }
     return () => cancelAnimationFrame(raf);
+  }, []);
+
+  // Fetch GA4 sessions for last 7 days
+  useEffect(() => {
+    let aborted = false;
+    (async () => {
+      try {
+        const res = await fetch('/api/metrics/ga-sessions', { cache: 'no-store' });
+        const data = await res.json();
+        if (!aborted && data?.ok) {
+          setMetrics((ms) =>
+            ms.map((m) => (m.label.startsWith('Visitas') ? { ...m, target: Number(data.sessions) || 0 } : m))
+          );
+        }
+      } catch (err) {
+        // keep mocked 0 if request fails
+        console.error('Metrics fetch error', err);
+      }
+    })();
+    return () => {
+      aborted = true;
+    };
   }, []);
 
   const dashboard = process.env.NEXT_PUBLIC_DASHBOARD_EMBED_URL;
