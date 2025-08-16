@@ -32,6 +32,12 @@ export default function TemplatesIndex() {
       badge: 'E-commerce',
     },
     {
+      slug: 'ecommerce2',
+      title: 'E-commerce 2.0',
+      desc: 'Storefront + Admin com grid, PDP e carrinho leve (estilo Shadcn).',
+      badge: 'E-commerce',
+    },
+    {
       slug: 'newsblog',
       title: 'News & Tech Blog',
       desc: 'Notícias estilo G1 + Tecnoblog, com adição de posts (localStorage).',

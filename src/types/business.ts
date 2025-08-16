@@ -31,6 +31,7 @@ export interface Service {
   description: string;
   price?: string;
   image?: string;
+  details?: string[]; // explicações simples para leigos sobre o que está incluso
 }
 
 export interface ContactForm {

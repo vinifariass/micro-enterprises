@@ -1,29 +1,162 @@
 @import "tailwindcss";
 
+/* ==========================================================================
+   1. DEFINIÇÃO DAS VARIÁVEIS E FONTES GLOBAIS
+   ========================================================================== */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Fontes (controladas via variáveis) */
+  --font-inter: "Inter", "Inter Fallback";
+  --font-geist: "Geist", "Geist Fallback";
+  --font-roboto: "Roboto", "Roboto Fallback";
+  --font-plus-jakarta-sans: "Plus Jakarta Sans", "Plus Jakarta Sans Fallback";
+  --font-montserrat: "Montserrat", "Montserrat Fallback";
+  --font-poppins: "Poppins", "Poppins Fallback";
+  --font-overpass-mono: "Overpass Mono", "Overpass Mono Fallback";
+  --font-pt-sans: "PT Sans", "PT Sans Fallback";
+  --font-hedvig-letters-serif: "Hedvig Letters Serif", "Hedvig Letters Serif Fallback";
+  --font-kumbh-sans: "Kumbh Sans", "Kumbh Sans Fallback";
+
+  /* ===================================================================== */
+  /* 2. DEFINIÇÃO DAS VARIÁVEIS DE TEMA (CORES)                            */
+  /* ===================================================================== */
+
+  /* Light Mode (valores padrão) */
+  --background: oklch(100% 0 0);
+  --foreground: oklch(27.4% .008 286.03);
+
+  /* Superfícies */
+  --card: oklch(100% 0 0);
+  --card-foreground: var(--foreground);
+  --muted: oklch(95% .004 286);
+  --muted-foreground: oklch(56% .01 286);
+  --border: oklch(92% .0053 286.32);
+  --input: oklch(95% .005 286);
+  --ring: oklch(27.4% .008 286.03);
+  --radius: 0.5rem;
+
+  /* Botões e interação */
+  --primary: oklch(14.1% .004 285.83);
+  --primary-foreground: oklch(98.5% .0013 286.84);
+  --secondary: oklch(87.1% .008 286.29);
+  --secondary-foreground: oklch(27.4% .008 286.03);
+  --destructive: oklch(57.7% .245 27.325);
+  --accent: oklch(92% .0053 286.32);
+  --accent-foreground: oklch(27.4% .008 286.03);
+
+  /* Sidebar */
+  --sidebar: oklch(96.7% .0027 286.38);
+  --sidebar-foreground: oklch(27.4% .008 286.03);
+  --sidebar-accent: oklch(92% .0053 286.32);
+  --sidebar-accent-foreground: oklch(27.4% .008 286.03);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Dark Mode overrides */
+.dark {
+  --background: oklch(14.1% .004 285.83);
+  --foreground: oklch(92% .0053 286.32);
+
+  --card: oklch(21% .0053 285.89);
+  --card-foreground: oklch(92% .0053 286.32);
+  --muted: oklch(24% .004 286);
+  --muted-foreground: oklch(80% .01 286);
+  --border: oklch(27.4% .008 286.03);
+  --input: oklch(24% .005 286);
+  --ring: oklch(92% .0053 286.32);
+
+  --primary: oklch(98.5% .0013 286.84);
+  --primary-foreground: oklch(21% .0053 285.89);
+  --secondary: oklch(55.2% .016 285.94);
+  --secondary-foreground: oklch(92% .0053 286.32);
+  --destructive: oklch(70.4% .191 22.216);
+  --accent: oklch(21% .0053 285.89);
+  --accent-foreground: oklch(92% .0053 286.32);
+
+  --sidebar: oklch(21% .0053 285.89);
+  --sidebar-foreground: oklch(92% .0053 286.32);
+  --sidebar-accent: oklch(27.4% .008 286.03);
+  --sidebar-accent-foreground: oklch(92% .0053 286.32);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Font faces essenciais (Inter, Geist, Roboto) */
+/* Inter */
+@font-face {
+  font-family: Inter;
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url(https://dashboard.shadcnuikit.com/_next/static/media/e4af272ccee01ff0-s.p.woff2) format("woff2");
+  unicode-range: u+00??, u+0131, u+0152-0153, u+02bb-02bc, u+02c6, u+02da, u+02dc, u+0304, u+0308, u+0329, u+2000-206f, u+20ac, u+2122, u+2191, u+2193, u+2212, u+2215, u+feff, u+fffd;
+}
+@font-face {
+  font-family: Inter Fallback;
+  src: local("Arial");
+  ascent-override: 90.44%;
+  descent-override: 22.52%;
+  line-gap-override: 0.00%;
+  size-adjust: 107.12%;
+}
+
+/* Geist */
+@font-face {
+  font-family: Geist;
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url(https://dashboard.shadcnuikit.com/_next/static/media/569ce4b8f30dc480-s.p.woff2) format("woff2");
+  unicode-range: u+00??, u+0131, u+0152-0153, u+02bb-02bc, u+02c6, u+02da, u+02dc, u+0304, u+0308, u+0329, u+2000-206f, u+20ac, u+2122, u+2191, u+2193, u+2212, u+2215, u+feff, u+fffd;
+}
+@font-face {
+  font-family: Geist Fallback;
+  src: local("Arial");
+  ascent-override: 95.94%;
+  descent-override: 28.16%;
+  line-gap-override: 0.00%;
+  size-adjust: 104.76%;
+}
+
+/* Roboto (regular + medium como base) */
+@font-face {
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: 400;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(https://dashboard.shadcnuikit.com/_next/static/media/47cbc4e2adbc5db9-s.p.woff2) format("woff2");
+  unicode-range: u+00??, u+0131, u+0152-0153, u+02bb-02bc, u+02c6, u+02da, u+02dc, u+0304, u+0308, u+0329, u+2000-206f, u+20ac, u+2122, u+2191, u+2193, u+2212, u+2215, u+feff, u+fffd;
+}
+@font-face {
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: 500;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url(https://dashboard.shadcnuikit.com/_next/static/media/47cbc4e2adbc5db9-s.p.woff2) format("woff2");
+  unicode-range: u+00??, u+0131, u+0152-0153, u+02bb-02bc, u+02c6, u+02da, u+02dc, u+0304, u+0308, u+0329, u+2000-206f, u+20ac, u+2122, u+2191, u+2193, u+2212, u+2215, u+feff, u+fffd;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist), var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
 }
+
+/* Use border token by default */
+* { border-color: var(--border); }
+
+/* Minimal shadcn-like utilities based on provided CSS */
+.bg-card { background-color: var(--card); }
+.text-card-foreground { color: var(--card-foreground); }
+.text-muted-foreground { color: var(--muted-foreground); }
+.bg-background { background-color: var(--background); }
+.text-foreground { color: var(--foreground); }
+.border-input { border-color: var(--input); }
+.ring-offset-background { --tw-ring-offset-color: var(--background); }
+.hover\:bg-accent:hover { background-color: var(--accent); }
+.hover\:text-accent-foreground:hover { color: var(--accent-foreground); }
+.shadow-xs { box-shadow: 0 1px 2px 0 rgba(0,0,0,0.06); }
+.focus-visible\:ring-\[3px\]:focus-visible { box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent); }
+.focus-visible\:border-ring:focus-visible { border-color: var(--ring); }
 
 /* Custom animations inspired by project.md */
 @keyframes circleBlueMove {

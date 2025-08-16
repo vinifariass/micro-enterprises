@@ -2,10 +2,10 @@ import { BusinessConfig } from '@/types/business';
 
 // Configuração padrão do negócio - CUSTOMIZE AQUI
 export const defaultBusinessConfig: BusinessConfig = {
-  name: 'VFS Consultoria',
+  name: 'VFS Consultoria – Consultoria em Presença Digital e Sites',
   slogan: 'Excelência em cada detalhe',
   description:
-    'Oferecemos soluções profissionais de alta qualidade para seu negócio crescer e se destacar no mercado.',
+    'Consultoria em presença digital e criação de sites. Falamos simples, entregamos rápido e com foco no resultado do seu negócio.',
   phone: '(21) 99147-9705',
   whatsapp: '5521991479705', // Número no formato internacional sem + e espaços
   email: 'contato@suaempresa.com.br',
@@ -24,13 +24,26 @@ export const defaultBusinessConfig: BusinessConfig = {
       description:
         'Site profissional sob medida, com foco em performance, SEO e conversão. Inclui layout exclusivo, integrações essenciais (WhatsApp, Analytics, formulário), e suporte na publicação.',
       price: 'A partir de R$ 800 por site',
+      details: [
+        'Você manda sua logo, cores e ideia; nós montamos o layout por você',
+        'O site abre rápido e funciona no celular (sem “gargalos” técnicos)',
+        'Botão de WhatsApp e formulário para receber pedidos e dúvidas',
+        'Configuração básica para aparecer bem no Google (SEO básico)',
+        'Publicação assistida: ajudamos a colocar o site no ar',
+      ],
     },
     {
       id: '2',
-      name: 'Consultoria Especializada',
+      name: 'Consultoria Especializada (presença digital)',
       description:
-        'Análise completa e orientação profissional para otimizar seus resultados.',
+        'Reunião 1:1 para entender seu momento, revisar seu site/redes e montar um plano claro do que fazer (sem “tecniquês”).',
       price: 'R$ 199/hora',
+      details: [
+        'Análise do seu site/redes sociais com olhar de negócio',
+        'Lista de melhorias priorizadas (o que fazer primeiro, segundo, etc.)',
+        'Sugestões de ferramentas simples e acessíveis',
+        'Acompanhamento por e‑mail com os próximos passos',
+      ],
     },
     {
       id: '3',
@@ -38,6 +51,12 @@ export const defaultBusinessConfig: BusinessConfig = {
       description:
         'Solução completa com tudo que você precisa para ter sucesso.',
       price: 'A partir de R$ 599',
+      details: [
+        'Site com mais páginas e conteúdo revisado para comunicar melhor',
+        'Integrações extras (agenda, CRM, automações, etc.) quando fizer sentido',
+        'Relatórios simples de visitas para entender seus resultados',
+        'Se necessário, banco de dados básico (ex.: lista de interessados/leads)',
+      ],
     },
   ],
   pricing: [
@@ -46,13 +65,13 @@ export const defaultBusinessConfig: BusinessConfig = {
       name: 'Essencial',
       priceMonthly: 'R$ 800',
       priceMonthlyNumber: 800,
-      description: 'Site de 1 página (landing) com WhatsApp e contato',
+      description: 'Página única para apresentar seu negócio e receber contatos',
       features: [
-        'Design profissional',
-        'Responsivo (mobile-first)',
-        'WhatsApp integrado',
-        'Formulário de contato',
-        'SEO básico',
+        'Design profissional (visual bonito e limpo)',
+        'Funciona bem no celular (mobile-first)',
+        'Botão do WhatsApp para falar com você',
+        'Formulário simples de contato (vai para seu e‑mail)',
+        'Aparece bem no Google (SEO básico)',
       ],
       paymentLink: 'https://pagamento.exemplo/essencial',
     },
@@ -61,13 +80,13 @@ export const defaultBusinessConfig: BusinessConfig = {
       name: 'Profissional',
       priceMonthly: 'R$ 1.500',
       priceMonthlyNumber: 1500,
-      description: 'Site completo com 4-6 seções e otimizações',
+      description: 'Site com várias seções e otimizado para velocidade e Google',
       features: [
-        'Home, Sobre, Serviços, Contato',
-        'Otimização de performance',
-        'SEO avançado (OG/Sitemap/Robots)',
-        'Integração Google Analytics',
-        'Suporte de 30 dias',
+        'Páginas: Home, Sobre, Serviços, Contato (podemos incluir mais)',
+        'Site rápido (otimização de performance)',
+        'Configurações do Google (OG/Sitemap/Robots) para melhor SEO',
+        'Relatórios de visitas (Google Analytics)',
+        'Suporte por 30 dias para ajustes simples',
       ],
       highlight: true,
       paymentLink: 'https://pagamento.exemplo/profissional',
@@ -77,13 +96,13 @@ export const defaultBusinessConfig: BusinessConfig = {
       name: 'Premium',
       priceMonthly: 'R$ 2.500',
       priceMonthlyNumber: 2500,
-      description: 'Site sob medida com integrações extras',
+      description: 'Projeto sob medida, integrações e estrutura pronta para crescer',
       features: [
-        'Páginas/Seções adicionais',
-        'Integrações (agenda, CRM, etc.)',
-        'Conteúdo otimizado',
-        'Hospedagem e domínio (opcional)',
-        'Suporte prioritário',
+        'Estratégia e layout personalizados conforme seu objetivo',
+        'Integrações extras (agenda, CRM, automações, etc.)',
+        'Conteúdo revisado/otimizado (textos e chamadas mais claros)',
+        'Banco de dados básico quando necessário (ex.: cadastro de leads)',
+        'Hospedagem e domínio (opcional) + suporte prioritário',
       ],
       paymentLink: 'https://pagamento.exemplo/premium',
     },

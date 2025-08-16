@@ -42,6 +42,16 @@ export default function Services() {
                   <p className="text-gray-600 mb-4 leading-relaxed">
                     {service.description}
                   </p>
+                  {service.details && service.details.length > 0 && (
+                    <ul className="mb-4 space-y-2 text-gray-700">
+                      {service.details.map((d, i) => (
+                        <li key={i} className="flex items-start">
+                          <span className="text-blue-600 mr-2">•</span>
+                          <span>{d}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                   
                   {service.price && (
                     <div className="mb-4">
