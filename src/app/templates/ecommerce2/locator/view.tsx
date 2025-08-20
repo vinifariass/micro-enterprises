@@ -144,7 +144,7 @@ export default function StoreLocatorView() {
     layer.addTo(mapRef.current);
   }, [boundsKey, category, query]);
 
-  const useMyLocation = React.useCallback(() => {
+  const goToMyLocation = React.useCallback(() => {
     if (!navigator.geolocation) return;
     navigator.geolocation.getCurrentPosition((pos) => {
       const c = { lat: pos.coords.latitude, lng: pos.coords.longitude };
@@ -168,8 +168,8 @@ export default function StoreLocatorView() {
   const onPickSuggestion = React.useCallback((s: Suggestion) => {
     setShowSuggestions(false);
     if (s.id === "nearby") {
-      // call the stable callback; this is allowed since it's not a hook, just a memoized function
-      useMyLocation();
+      // call the stable callback; not a hook, just a memoized function
+      goToMyLocation();
       return;
     }
     if (s.lat && s.lng) {
@@ -177,7 +177,7 @@ export default function StoreLocatorView() {
       if (mapRef.current) mapRef.current.setView([s.lat, s.lng], 13);
       saveRecent(s);
     }
-  }, [saveRecent, useMyLocation]);
+  }, [saveRecent, goToMyLocation]);
 
   React.useEffect(() => {
     const onDocPointerDown = (e: PointerEvent) => {
@@ -218,7 +218,7 @@ export default function StoreLocatorView() {
               ))}
             </div>
             <div className="hidden md:flex items-center gap-2 pl-2 ml-2 border-l">
-              <Button variant="outline" size="sm" onClick={useMyLocation}><Navigation className="mr-2 size-4" />Minha localização</Button>
+              <Button variant="outline" size="sm" onClick={goToMyLocation}><Navigation className="mr-2 size-4" />Minha localização</Button>
               <div className="flex items-center gap-2 text-xs">
                 <span className="text-muted-foreground">Raio</span>
                 <select className="rounded-md border bg-background px-2 py-1 text-xs" value={radiusKm}
