@@ -50,13 +50,22 @@ function StoreShellInner({ children, showTopBar = true }: { children: React.Reac
   );
 }
 
-export default function StoreShellLayout({ children, showTopBar = true, useExistingProvider = false }: StoreShellProps) {
+export function StoreShell({ children, showTopBar = true, useExistingProvider = false }: StoreShellProps) {
   if (useExistingProvider) {
     return <StoreShellInner showTopBar={showTopBar}>{children}</StoreShellInner>;
   }
   return (
     <SidebarProvider>
       <StoreShellInner showTopBar={showTopBar}>{children}</StoreShellInner>
+    </SidebarProvider>
+  );
+}
+
+// Next.js layout for the (store) route group must accept only { children }
+export default function Layout({ children }: { children: React.ReactNode }) {
+  return (
+    <SidebarProvider>
+      <StoreShellInner showTopBar>{children}</StoreShellInner>
     </SidebarProvider>
   );
 }
