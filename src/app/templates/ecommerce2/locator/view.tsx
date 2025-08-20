@@ -63,6 +63,7 @@ export default function StoreLocatorView() {
   const [boundsKey, setBoundsKey] = React.useState<string>("");
   const leafletRef = React.useRef<typeof import("leaflet") | null>(null);
   const resizeObsRef = React.useRef<ResizeObserver | null>(null);
+  const winResizeHandlerRef = React.useRef<((this: Window, ev: UIEvent) => void) | null>(null);
 
   // Airbnb-like base suggestions
   const baseSuggestions: Suggestion[] = React.useMemo(
@@ -129,8 +130,8 @@ export default function StoreLocatorView() {
   // Fallback: on window resize
   const onWinResize = () => map.invalidateSize();
   window.addEventListener("resize", onWinResize);
-  // Store on a ref for cleanup
-  (window as any).__locatorOnResize = onWinResize;
+  // Store handler for cleanup
+  winResizeHandlerRef.current = onWinResize;
 
       const updateBounds = () => {
         const b = map.getBounds();
@@ -147,8 +148,9 @@ export default function StoreLocatorView() {
         try { resizeObsRef.current.disconnect(); } catch {}
         resizeObsRef.current = null;
       }
-      const handler = (window as any).__locatorOnResize as ((this: Window, ev: UIEvent) => any) | undefined;
-      if (handler) window.removeEventListener("resize", handler);
+  const handler = winResizeHandlerRef.current;
+  if (handler) window.removeEventListener("resize", handler);
+  winResizeHandlerRef.current = null;
     };
   }, [center.lat, center.lng]);
 
