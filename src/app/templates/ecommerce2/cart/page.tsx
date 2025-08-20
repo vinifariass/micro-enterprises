@@ -4,12 +4,15 @@ import Image from "next/image";
 import { useCart } from "../CartContext";
 import { PRODUCTS } from "../catalog";
 import { CreditCard, Minus, Package, Plus, Shield, Trash2, Truck } from "lucide-react";
+import { useState } from "react";
 
 export default function Page() {
-  const { items, add, dec, remove, total } = useCart();
+  const { items, add, dec, remove, totals, applyCoupon, coupon } = useCart();
+  const [promoCode, setPromoCode] = useState("");
+  const [promoFeedback, setPromoFeedback] = useState<string | null>(null);
 
   const shipping = items.length > 0 ? 5.99 : 0;
-  const finalTotal = total + shipping;
+  const finalTotal = totals.total + shipping;
 
   return (
     <main className="mx-auto w-full max-w-7xl p-6">
@@ -23,8 +26,10 @@ export default function Page() {
           <div className="space-y-4">
             {items.map((it) => {
               const p = PRODUCTS.find((x) => x.id === it.id)!;
+              const v = p.variants?.find((vv) => vv.sku === it.sku);
+              const unitPrice = (v?.priceOverride ?? p.price);
               return (
-                <div key={it.id} data-slot="card" className="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border shadow-sm overflow-hidden p-0">
+                <div key={`${it.id}:${it.sku ?? ""}`} data-slot="card" className="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border shadow-sm overflow-hidden p-0">
                   <div data-slot="card-content" className="p-0">
                     <div className="flex h-full flex-col md:flex-row">
                       <div className="relative h-auto w-full md:w-32">
@@ -36,24 +41,28 @@ export default function Page() {
                         <div className="flex justify-between">
                           <div>
                             <h3 className="font-medium">{p.name}</h3>
-                            <p className="text-muted-foreground text-sm">Standard</p>
+                            {v ? (
+                              <p className="text-muted-foreground text-sm">SKU: {v.sku}{v.size ? ` • Size ${v.size}` : ""}{v.color ? ` • ${v.color}` : ""}</p>
+                            ) : (
+                              <p className="text-muted-foreground text-sm">Standard</p>
+                            )}
                           </div>
-                          <button onClick={() => remove(it.id)} data-slot="button" className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 size-9">
+                          <button onClick={() => remove(it.id, it.sku)} data-slot="button" className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 size-9">
                             <Trash2 className="h-4 w-4" />
                           </button>
                         </div>
                         <div className="mt-4 flex items-center justify-between">
                           <div className="flex items-center gap-2">
-                            <button onClick={() => dec(it.id)} data-slot="button" className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 size-9">
+                            <button onClick={() => dec(it.id, it.sku)} data-slot="button" className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 size-9">
                               <Minus className="h-4 w-4" />
                             </button>
                             <span className="w-8 text-center">{it.qty}</span>
-                            <button onClick={() => add(it.id)} data-slot="button" className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 size-9">
+                            <button onClick={() => add(it.id, 1, it.sku)} data-slot="button" className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 size-9">
                               <Plus className="h-4 w-4" />
                             </button>
                           </div>
                           <div className="text-right">
-                            <div className="font-medium">${(p.price * it.qty).toFixed(2)}</div>
+                            <div className="font-medium">${(unitPrice * it.qty).toFixed(2)}</div>
                           </div>
                         </div>
                       </div>
@@ -86,13 +95,49 @@ export default function Page() {
               <div className="space-y-2">
                 <label data-slot="label" className="flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50">Promo Code</label>
                 <div className="flex gap-2">
-                  <input data-slot="input" className="file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive" placeholder="Enter promo code" />
-                  <button data-slot="button" className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-9 px-4 py-2 has-[>svg]:px-3">Apply</button>
+                  <input
+                    value={promoCode}
+                    onChange={(e) => setPromoCode(e.target.value)}
+                    data-slot="input"
+                    className="file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive"
+                    placeholder="Enter promo code"
+                  />
+                  <button
+                    onClick={() => {
+                      const ok = applyCoupon(promoCode);
+                      setPromoFeedback(ok ? `Applied ${promoCode.toUpperCase()}` : "Invalid or ineligible code");
+                    }}
+                    data-slot="button"
+                    className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-9 px-4 py-2 has-[>svg]:px-3"
+                  >
+                    Apply
+                  </button>
                 </div>
+                {promoFeedback && (
+                  <p className={`text-xs ${coupon ? "text-green-600" : "text-red-600"}`}>{promoFeedback}</p>
+                )}
+                {coupon && (
+                  <div className="flex items-center justify-between text-xs text-muted-foreground">
+                    <span>Applied: <span className="font-medium">{coupon.code}</span></span>
+                    <button
+                      onClick={() => {
+                        setPromoCode("");
+                        applyCoupon("");
+                        setPromoFeedback(null);
+                      }}
+                      className="underline hover:no-underline"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                )}
               </div>
 
               <div className="space-y-2">
-                <div className="flex justify-between text-sm"><span>Subtotal</span><span>${total.toFixed(2)}</span></div>
+                <div className="flex justify-between text-sm"><span>Subtotal</span><span>${totals.subtotal.toFixed(2)}</span></div>
+                {totals.discount > 0 && (
+                  <div className="flex justify-between text-sm text-green-600"><span>Discount{totals.appliedCoupon ? ` (${totals.appliedCoupon})` : ""}</span><span>- ${totals.discount.toFixed(2)}</span></div>
+                )}
                 <div className="flex justify-between text-sm"><span>Shipping</span><span>${shipping.toFixed(2)}</span></div>
                 <div className="flex justify-between font-medium"><span>Total</span><span>${finalTotal.toFixed(2)}</span></div>
               </div>

@@ -2,18 +2,21 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import type { Product } from "../../catalog";
 import { useCart } from "../../CartContext";
 import CustomerReviews from "../CustomerReviews";
 
-const SIZES = ["P", "M", "G", "GG", "GGG"];
-
 export default function ProductDetailView({ product }: { product: Product }) {
   const { add } = useCart();
   const [active, setActive] = useState(0);
-  const [size, setSize] = useState<string | null>("M");
+  // Derive options from variants
+  const sizes = useMemo(() => Array.from(new Set(product.variants?.map(v => v.size).filter(Boolean) as string[])), [product.variants]);
+  const colors = useMemo(() => Array.from(new Set(product.variants?.map(v => v.color).filter(Boolean) as string[])), [product.variants]);
+  const [size, setSize] = useState<string | null>(sizes[0] ?? null);
+  const [color, setColor] = useState<string | null>(colors[0] ?? null);
   const [qty, setQty] = useState(1);
+  const selected = useMemo(() => product.variants?.find(v => (size ? v.size === size : true) && (color ? v.color === color : true)), [product.variants, size, color]);
 
   const gallery = product.images?.length ? product.images : product.image ? [product.image] : [];
 
@@ -113,16 +116,24 @@ export default function ProductDetailView({ product }: { product: Product }) {
                 <div>
                   <div className="mb-3 font-semibold">Cores:</div>
                   <div className="flex gap-2">
-                    {["#22c55e", "#6366f1", "#a855f7"].map((c) => (
-                      <span key={c} className="inline-block size-8 rounded-full border border-gray-200" style={{ background: c }} />
+                    {(colors.length ? colors : ["Única"]).map((c) => (
+                      <button
+                        key={c}
+                        onClick={() => setColor(c === "Única" ? null : c)}
+                        className={(color===c || (c==="Única" && color===null) ? "border-black bg-black/5 " : "") + "px-3 h-9 inline-flex items-center justify-center rounded-md border border-gray-300 text-xs"}
+                      >{c}</button>
                     ))}
                   </div>
                 </div>
                 <div>
                   <div className="mb-3 font-semibold">Tamanhos:</div>
                   <div className="flex flex-wrap gap-2">
-                    {SIZES.map((s) => (
-                      <button key={s} onClick={() => setSize(s)} className={(size===s ? "border-black bg-black/5 " : "") + "flex size-10 items-center justify-center rounded-md border border-gray-300 text-xs uppercase"}>{s}</button>
+                    {(sizes.length ? sizes : ["Único"]).map((s) => (
+                      <button
+                        key={s}
+                        onClick={() => setSize(s === "Único" ? null : s)}
+                        className={(size===s || (s==="Único" && size===null) ? "border-black bg-black/5 " : "") + "flex h-9 px-3 items-center justify-center rounded-md border border-gray-300 text-xs uppercase"}
+                      >{s}</button>
                     ))}
                   </div>
                 </div>
@@ -134,8 +145,21 @@ export default function ProductDetailView({ product }: { product: Product }) {
                   <div className="w-10 text-center">{qty}</div>
                   <button onClick={() => setQty(qty+1)} className="px-3 py-2">+</button>
                 </div>
-                <button onClick={() => add(product.id, qty)} className="inline-flex items-center gap-2 h-10 px-4 rounded-md bg-black text-white text-sm shadow-sm">Adicionar ao carrinho</button>
+                <button
+                  disabled={!!product.variants && !selected}
+                  onClick={() => add(product.id, qty, selected?.sku)}
+                  className="inline-flex items-center gap-2 h-10 px-4 rounded-md bg-black text-white text-sm shadow-sm disabled:opacity-50"
+                >
+                  Adicionar ao carrinho
+                </button>
                 <button className="inline-flex items-center gap-2 h-10 px-4 rounded-md border border-gray-300 text-sm shadow-sm">❤️ Favorito</button>
+              </div>
+              <div className="px-6 pb-2 text-xs text-muted-foreground">
+                {selected ? (
+                  <span>SKU selecionado: <span className="font-medium">{selected.sku}</span> • {selected.stock ?? 0} em estoque • Preço: R$ {(selected.priceOverride ?? product.price).toFixed(2)}</span>
+                ) : product.variants?.length ? (
+                  <span>Selecione cor/tamanho para continuar</span>
+                ) : null}
               </div>
             </div>
 

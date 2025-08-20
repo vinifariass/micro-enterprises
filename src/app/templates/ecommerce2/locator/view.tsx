@@ -213,7 +213,7 @@ export default function StoreLocatorView() {
     if (category !== "all") list = list.filter(({ store }) => store.category === category);
     if (query) list = list.filter(({ store }) => (`${store.name} ${store.tags.join(" ")} ${store.address}`.toLowerCase().includes(query.toLowerCase())));
     return list.sort((a, b) => a.km - b.km);
-  }, [category, query, center, radiusKm]);
+  }, [category, query, center, radiusKm, mounted]);
 
   const onPickSuggestion = React.useCallback((s: Suggestion) => {
     setShowSuggestions(false);

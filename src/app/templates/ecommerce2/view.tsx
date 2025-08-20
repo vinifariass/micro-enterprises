@@ -7,7 +7,7 @@ import { PRODUCTS } from "./catalog";
 import { useToast } from "./Toast";
 
 export default function Storefront() {
-  const { add, items, total, dec, clear } = useCart();
+  const { add, items, totals, dec, clear } = useCart();
   const { toast } = useToast();
 
   return (
@@ -96,7 +96,7 @@ export default function Storefront() {
               })}
               <div className="p-4 flex items-center justify-between">
                 <div className="text-gray-600">Total</div>
-                <div className="text-xl font-extrabold">R$ {total.toFixed(2)}</div>
+                <div className="text-xl font-extrabold">R$ {totals.total.toFixed(2)}</div>
               </div>
               <div className="p-4 flex items-center justify-end gap-3">
                 <button onClick={clear} className="px-4 py-2 rounded-lg border">Limpar</button>

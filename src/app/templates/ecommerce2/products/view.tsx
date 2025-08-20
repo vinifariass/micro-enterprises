@@ -91,7 +91,14 @@ export default function ProductsView() {
           <div className="flex-1">
             <div className="mb-4 text-sm text-muted-foreground">{filtered.length} products found</div>
             <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-          {filtered.map((p) => (
+          {filtered.map((p) => {
+            const firstInStockSku = p.variants?.find(v => (v.stock ?? 0) > 0)?.sku;
+            const hasVariants = !!p.variants?.length;
+            const priceDisplay = hasVariants && p.variants?.some(v => v.priceOverride && v.priceOverride !== p.price)
+              ? `R$ ${Math.min(p.price, ...p.variants!.map(v => v.priceOverride ?? p.price)).toFixed(2)}+`
+              : `R$ ${p.price.toFixed(2)}`;
+            const outOfStock = hasVariants && !firstInStockSku;
+            return (
             <div key={p.id} className="product-card">
               {/* Favorite heart overlay */}
               <button
@@ -117,16 +124,16 @@ export default function ProductsView() {
                   <h3 className="product-card__title" title={p.name}>{p.name}</h3>
                   <p className="product-card__category">{/tee|shirt|camiseta/i.test(p.name) ? 'Apparel' : 'Sneakers'}</p>
                 </div>
-                <p className="product-card__price">R$ {p.price.toFixed(2)}</p>
+        <p className="product-card__price">{priceDisplay}</p>
               </div>
               <div className="product-card__actions">
-                <button className="product-card__button product-card__button--add-to-cart" onClick={() => { add(p.id, 1); toast({ title: "Adicionado ao carrinho", description: p.name }); }}>
+        <button disabled={outOfStock} className="product-card__button product-card__button--add-to-cart disabled:opacity-50" onClick={() => { add(p.id, 1, firstInStockSku); toast({ title: "Adicionado ao carrinho", description: p.name }); }}>
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-plus"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
                   Adicionar ao carrinho
                 </button>
               </div>
             </div>
-          ))}
+      );})}
             </div>
           </div>
         </div>
