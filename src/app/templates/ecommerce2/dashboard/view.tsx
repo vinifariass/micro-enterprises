@@ -52,6 +52,12 @@ export default function DashboardView() {
             <li className="pt-2 border-t">
               <Link className="flex items-center gap-2 px-2 py-2 rounded hover:bg-gray-100" href="/templates/ecommerce2/products">Products</Link>
             </li>
+            <li>
+              <Link className="flex items-center gap-2 px-2 py-2 rounded hover:bg-gray-100" href="/templates/ecommerce2/chat">Chat</Link>
+            </li>
+            <li>
+              <Link className="flex items-center gap-2 px-2 py-2 rounded hover:bg-gray-100" href="/templates/ecommerce2/locator">Store Locator</Link>
+            </li>
           </ul>
         </nav>
       </aside>
@@ -86,6 +92,12 @@ export default function DashboardView() {
             </li>
             <li className="pt-2 border-t">
               <Link className="flex items-center gap-2 px-2 py-2 rounded hover:bg-gray-100" href="/templates/ecommerce2/products" onClick={() => setMobileOpen(false)}>Products</Link>
+            </li>
+            <li>
+              <Link className="flex items-center gap-2 px-2 py-2 rounded hover:bg-gray-100" href="/templates/ecommerce2/chat" onClick={() => setMobileOpen(false)}>Chat</Link>
+            </li>
+            <li>
+              <Link className="flex items-center gap-2 px-2 py-2 rounded hover:bg-gray-100" href="/templates/ecommerce2/locator" onClick={() => setMobileOpen(false)}>Store Locator</Link>
             </li>
           </ul>
         </nav>

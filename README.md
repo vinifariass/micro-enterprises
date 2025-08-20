@@ -1,228 +1,151 @@
-# Template Profissional para Pequenos Negócios
+# Micro Enterprises
 
-Um template Next.js moderno e responsivo para sites de pequenos negócios, desenvolvido com React, TypeScript e Tailwind CSS.
+> Template Next.js completo para pequenos negócios com Ecommerce, Dashboard, Locator (mapa), Chat, Blog, SEO e componentes reutilizáveis.
 
-## 🚀 Características
+## Visão Geral
 
-- ✨ **Design Moderno**: Interface profissional e atrativa
-- 📱 **Totalmente Responsivo**: Otimizado para mobile, tablet e desktop
-- ⚡ **Performance**: Next.js 15 com App Router para máxima velocidade
-- 🎨 **Tailwind CSS**: Estilização moderna e flexível
-- 📞 **Integração WhatsApp**: Botões de contato direto
-- 📧 **Formulário de Contato**: Sistema de envio de mensagens
-- 🔍 **SEO Otimizado**: Meta tags e estrutura otimizada para buscadores
-- 🛠️ **TypeScript**: Desenvolvimento type-safe
+- Next.js 15 (App Router) + React 19 + TypeScript
+- Tailwind CSS e componentes “shadcn-like” (Button, Card, Input, Dialog, Sidebar etc.)
+- Gráficos com Recharts e ícones com lucide-react
+- Mapa com Leaflet + OpenStreetMap (SSR-safe)
+- Ecommerce 2.0 com catálogo, produto, carrinho global, toasts e resumo de pedido
+- SEO (OpenGraph, sitemap, robots) e helpers de Analytics (GA4)
+- APIs utilitárias (contato, subscribe, métricas)
 
-## 📋 Seções Incluídas
+## Estrutura
 
-1. **Header** - Navegação fixa com menu responsivo
-2. **Hero** - Seção principal com call-to-action
-3. **Sobre** - História e valores da empresa
-4. **Serviços** - Catálogo de serviços com preços
-5. **Contato** - Formulário e informações de contato
-6. **Footer** - Links e informações complementares
+```
+src/
+  app/
+    page.tsx                         # Home com carrossel de templates
+    globals.css                      # Tema, utilitários e ajustes de camadas (Leaflet)
+    opengraph-image.tsx              # Imagem OG padrão
+    robots.ts, sitemap.ts            # SEO básico
 
-## 🎯 Ideal Para
+    api/
+      contact/route.ts               # POST contato (Resend + Webhook opcional)
+      metrics/ga-sessions/route.ts   # Exemplo de métrica/telemetria
+      subscribe/route.ts             # Exemplo de inscrição
 
-- Lojas físicas
-- Restaurantes e lanchonetes  
-- Clínicas e profissionais liberais
-- Prestadores de serviços
-- Consultórios
-- Pequenas empresas em geral
+    (store)/                         # Grupo com Sidebar para Locator e Store Details
+      layout.tsx
+      locator/page.tsx
+      store/[id]/page.tsx
 
-## ⚙️ Configuração Rápida
+    templates/
+      page.tsx                       # Catálogo de templates
+      ecommerce2/
+        layout.tsx                   # Header + CartButton + ToastProvider + Footer
+        page.tsx                     # Vitrine (catálogo)
+        [id]/page.tsx, view.tsx      # Página de produto
+        products/[id]/page.tsx       # Variação de produto
+        products/page.tsx            # Lista de produtos (demo)
+        cart/page.tsx                # Carrinho + Order Summary
+        CartContext.tsx              # Estado do carrinho (add/dec/remove/clear/total)
+        CartButton.tsx               # Botão do carrinho (client) com badge
+        Toast.tsx                    # Toast leve (provider + hook)
+        Footer.tsx                   # Footer “ShopCraft”
+        dashboard/*                  # Dashboard/KPIs/Recharts
+        chat/*                       # Chat com áudio + call dialog (scaffold)
+        locator/*                    # Locator dentro do template (variação)
 
-### 1. Personalizar Informações da Empresa
+      streetwear/                    # Catálogo base (imagens locais)
 
-Edite o arquivo `src/config/business.ts` com as informações do seu cliente:
+  components/
+    TemplatesCarousel.tsx            # Carrossel responsivo da Home
+    ui/*                             # Primitivas “shadcn-like” (button, card, input, …)
 
-```typescript
-export const defaultBusinessConfig: BusinessConfig = {
-  name: "Nome da Empresa",
-  slogan: "Slogan da empresa",
-  description: "Descrição dos serviços...",
-  phone: "(11) 99999-9999",
-  whatsapp: "5511999999999", // Formato internacional
-  email: "contato@empresa.com.br",
-  address: "Endereço completo",
-  // ... outros campos
-};
+  config/business.ts                 # Dados padrão de negócio/contato
+  lib/analytics.ts                   # Wrappers GA4 opcionais
 ```
 
-### 2. Customizar Serviços
+## Módulos e Funcionalidades
 
-No mesmo arquivo, altere o array `services`:
+### Ecommerce 2.0
+- Catálogo usa `streetwear/catalog.ts` (imagens locais em `public/images/streetwear`).
+- Produto: galeria com thumbs, variação de tamanho, controle de quantidade e CTA “ADICIONAR À SACOLA”.
+- Carrinho (global):
+  - `CartContext`: `add(id, qty?)`, `dec(id)`, `remove(id)`, `clear()`, `total`.
+  - `CartButton` (client): ícone com badge somando as quantidades totais.
+  - `ToastProvider`: feedback “Adicionado ao carrinho” no grid e no detalhe.
+- Página do carrinho: layout com cards de itens, +/−, remover, subtotal, frete fixo ($5.99) e total.
+- Footer ShopCraft (links e redes) incluído no layout do template.
 
-```typescript
-services: [
-  {
-    id: "1",
-    name: "Nome do Serviço",
-    description: "Descrição detalhada",
-    price: "R$ 299"
-  },
-  // Adicione mais serviços conforme necessário
-]
-```
+Rotas principais do Ecommerce:
+- Catálogo: `/templates/ecommerce2`
+- Produto: `/templates/ecommerce2/[id]` (ou `/templates/ecommerce2/products/[id]`)
+- Carrinho: `/templates/ecommerce2/cart`
+- Dashboard/Chat/Admin: `/templates/ecommerce2/{sales-dashboard,chat,admin}`
 
-### 3. Cores e Branding
+### Dashboard de Vendas
+- KPIs padronizados.
+- `RevenueChartCard` com Recharts e tema via variáveis CSS.
 
-Personalize as cores no arquivo de configuração:
+### Store Locator (mapa)
+- Leaflet + OSM com markers, busca/sugestões, filtro de raio, “Usar minha localização”, lista lateral no desktop e bottom sheet no mobile.
+- Detalhe da loja em `/(store)/store/[id]` (reviews, site externo, endereço, tags).
+- Layout do grupo `(store)` inclui Sidebar com navegação.
 
-```typescript
-colors: {
-  primary: "#2563eb",    // Cor principal
-  secondary: "#1e40af",  // Cor secundária
-  accent: "#f59e0b"      // Cor de destaque
-}
-```
+### Chat (demo)
+- Envios de áudio (gravação/playback) e diálogo de chamada (voz/vídeo/screen) como scaffolding com UI e estados básicos.
 
-## 🚀 Como Executar
+### Blog e SEO
+- Blog simples em `/blog` e `/blog/[slug]`.
+- SEO: OpenGraph image, sitemap e robots prontos.
+
+## Executar o projeto
+
+Pré-requisitos: Node 18+
 
 ```bash
-# Instalar dependências
 npm install
-
-# Executar em desenvolvimento
 npm run dev
-
-# Build para produção
+# produção
 npm run build
-
-# Executar build de produção
 npm start
 ```
 
-## 💼 Modelo de Negócio
+No VS Code há uma tarefa: “Executar Template - Desenvolvimento”.
 
-### Precificação Sugerida
-- **Site Simples**: R$ 800 - R$ 1.500
-- **Site Intermediário**: R$ 1.500 - R$ 2.500
-- **Site Completo**: R$ 2.500 - R$ 4.000
+## Variáveis de Ambiente (.env.local)
 
-### Tempo de Entrega
-- **Personalização básica**: 1-2 dias
-- **Customizações avançadas**: 3-5 dias
-- **Site completamente novo**: 1-2 semanas
-
-### Estratégia de Vendas
-1. Demonstre o template funcionando
-2. Mostre a facilidade de personalização
-3. Enfatize design moderno e responsivo
-4. Destaque integração com WhatsApp
-5. Ofereça suporte pós-entrega
-
-## 📱 Funcionalidades WhatsApp
-
-O template inclui integração completa com WhatsApp:
-- Botões de contato em várias seções
-- Links personalizados por serviço
-- Mensagens pré-formatadas
-- Ícones e estilos otimizados
-
-## 🎨 Customização Avançada
-
-### Adicionar Nova Seção
-1. Crie o componente em `src/components/`
-2. Importe e adicione em `src/app/page.tsx`
-3. Atualize navegação se necessário
-
-### Modificar Estilos
-- Use classes Tailwind para mudanças rápidas
-- Customize `src/app/globals.css` para estilos globais
-- Modifique componentes individuais conforme necessário
-
-### Integrar com CMS
-O template está preparado para integração com:
-- Contentful
-- Strapi
-- Sanity
-- WordPress (headless)
-
-## 📊 Analytics e SEO
-
-### SEO Incluído
-- Meta tags otimizadas
-- Open Graph tags
-- Schema markup preparado
-- URLs amigáveis
-- Sitemap automático
-
-### Analytics Recomendados
-- Google Analytics 4
-- Google Search Console
-- Facebook Pixel (opcional)
-
-### Checkout e Página de Obrigado
-- Configure os links de pagamento em `src/config/business.ts` (campo `paymentLink` por plano)
-- Defina a URL de retorno do seu provedor para `/thank-you` para registrar a conversão
-- A página `/thank-you` dispara um evento `purchase` no GA4 automaticamente
-
-## 🛠️ Tecnologias Utilizadas
-
-- **Next.js 15** - Framework React
-- **TypeScript** - Tipagem estática
-- **Tailwind CSS** - Estilização
-- **React** - Biblioteca UI
-- **ESLint** - Linting
-- **PostCSS** - Processamento CSS
-
-## 📦 Deploy
-
-### Vercel (Recomendado)
 ```bash
-npm install -g vercel
-vercel
+# Google Analytics (opcional)
+NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX
+
+# Envio de emails (opcionais)
+RESEND_API_KEY=your_resend_api_key
+CONTACT_TO_EMAIL=destino@dominio.com
+CONTACT_FROM_EMAIL=no-reply@seusite.com
+
+# Webhook de contato (opcional)
+CONTACT_WEBHOOK_URL=https://exemplo.com/webhook
 ```
 
-### Netlify
-```bash
-npm run build
-# Upload da pasta .next para Netlify
-```
+- API de contato: `POST /api/contact` — usa Resend e/ou webhook; sem envs, apenas loga.
 
-### Hospedagem Tradicional
-```bash
-npm run build
-npm run export
-# Upload da pasta out/
-```
+## Customização
 
-## 🎯 Próximos Passos
+- Tema e utilitários globais: `src/app/globals.css` (inclui CSS do Leaflet e ajustes de z-index para sobrepor sugestões, header etc.).
+- UI base: `src/components/ui/*` (mantém API e classes utilitárias Tailwind).
+- Carrossel da Home: `src/components/TemplatesCarousel.tsx` (dados em `src/app/data/templates.ts`).
+- Dados do negócio: `src/config/business.ts`.
+- Analytics: `src/lib/analytics.ts` (wrappers `gaEvent`, `gaPageview`, `gaBeginCheckout` etc.).
 
-Após entregar o site para o cliente:
+Dicas:
+- Qualquer componente que use hooks de cliente (ex.: `useCart`) deve ser Client Component ("use client").
+- Páginas com Leaflet devem evitar SSR ou usar dynamic import conforme necessário.
 
-1. **Treinamento básico** - Como editar conteúdo
-2. **Configurar analytics** - Google Analytics/Search Console  
-3. **SEO local** - Google My Business
-4. **Backup** - Configurar backups automáticos
-5. **Manutenção** - Plano de atualizações
+## Testes rápidos (manuais)
+- Adicionar itens no catálogo do Ecommerce: ver toast e badge do carrinho aumentar.
+- Abrir `/templates/ecommerce2/cart`: testar +/−/remover e total.
+- Locator: usar “Minha localização”, filtrar por raio e abrir detalhe da loja.
+- Dashboard: verificar gráfico de receita renderizando com tema.
 
-## 💡 Dicas de Vendas
-
-### Pitch de Vendas
-"Site profissional moderno, responsivo e otimizado para conversões, com integração WhatsApp e entrega em 3 dias."
-
-### Diferenciais
-- Design moderno e profissional
-- Carregamento ultrarrápido
-- Integração WhatsApp nativa
-- SEO otimizado
-- Suporte técnico incluso
-
-### Upsells Possíveis
-- Integração com redes sociais
-- Sistema de agendamento
-- Blog/notícias
-- E-commerce básico
-- Certificado SSL
-- Domínio personalizado
-
-## 📞 Suporte
-
-Para dúvidas sobre customização ou vendas, consulte a documentação do Next.js ou entre em contato.
+## Deploy
+- Recomendado: Vercel. Configure as mesmas variáveis do `.env.local` no projeto.
+- Outras plataformas funcionarão desde que suportem Next.js 15.
 
 ---
 
-**Desenvolvido para maximizar suas vendas de sites profissionais! 🚀**
+Feito para acelerar a entrega de sites profissionais com UX moderna, código limpo e exemplos práticos (ecommerce, mapas, chat, dashboards).

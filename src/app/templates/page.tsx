@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
 export const metadata = {
   title: 'Templates prontos',
@@ -54,7 +55,18 @@ export default function TemplatesIndex() {
   return (
     <main className="py-20 bg-white min-h-[60vh]">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl">
-        <h1 className="text-3xl font-bold text-gray-900">Templates</h1>
+        <div className="flex flex-col gap-4 mb-6">
+          <div className="flex items-center gap-4">
+            <Button asChild variant="outline">
+              <a href="/">Voltar para a Home</a>
+            </Button>
+            <h1 className="text-3xl font-bold">Templates</h1>
+          </div>
+          <div className="bg-muted rounded-lg p-4 text-base text-muted-foreground">
+            <strong>O que são templates?</strong><br />
+            Templates são modelos prontos de site para diferentes tipos de negócio. Você pode escolher um template, personalizar com suas informações e publicar rapidamente, sem precisar entender de programação. Basta selecionar o modelo que mais combina com sua empresa e seguir as instruções.
+          </div>
+        </div>
         <p className="text-gray-600 mt-2">Modelos inspirados em temas populares, criados do zero com Tailwind CSS.</p>
         <div className="grid sm:grid-cols-2 gap-6 mt-10">
           {items.map((t) => (

@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 import type { Product } from "../../streetwear/catalog";
 import { useCart } from "../CartContext";
+import { useToast } from "../Toast";
 
 const SIZES = ["P", "M", "G", "GG", "GGG"];
 
@@ -12,6 +13,7 @@ export default function ProductDetail({ product }: { product: Product }) {
   const [qty, setQty] = useState(1);
   const [active, setActive] = useState(0);
   const { add } = useCart();
+  const { toast } = useToast();
 
   const isShoe = /adidas|vans|nb-480/.test(product.id);
   const gallery = product.images && product.images.length > 0 ? product.images : product.image ? [product.image] : [];
@@ -139,8 +141,11 @@ export default function ProductDetail({ product }: { product: Product }) {
             </div>
 
             <button
-              onClick={() => add(product.id, qty)}
-              className="mt-6 w-full h-12 rounded-full bg-black text-white font-semibold text-sm"
+              onClick={() => {
+                add(product.id, qty);
+                toast({ title: "Adicionado ao carrinho", description: `${qty}× ${product.name}` });
+              }}
+              className="mt-6 w-full h-12 rounded-full bg-black text-white font-semibold text-sm hover:bg-black/90 transition-colors"
             >
               ADICIONAR À SACOLA
             </button>

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import type { Product } from "../../catalog";
 import { useCart } from "../../CartContext";
+import CustomerReviews from "../CustomerReviews";
 
 const SIZES = ["P", "M", "G", "GG", "GGG"];
 
@@ -138,30 +139,8 @@ export default function ProductDetailView({ product }: { product: Product }) {
               </div>
             </div>
 
-            {/* Reviews placeholder */}
-            <div className="bg-white rounded-xl border border-gray-200 py-6">
-              <div className="px-6 flex items-center justify-between">
-                <div className="font-semibold">Avaliações</div>
-                <button className="h-9 px-4 rounded-md border border-gray-300 text-sm shadow-sm">Escrever avaliação</button>
-              </div>
-              <div className="px-6 mt-4 grid gap-4">
-                {["Ótima qualidade", "Design bonito", "Pode melhorar"].map((title, i) => (
-                  <div key={i} className="rounded-lg border border-gray-200 p-4">
-                    <div className="flex items-start gap-3">
-                      <span className="inline-grid place-items-center size-10 rounded-full bg-gray-100 text-gray-600">{["M","J","L"][i]}</span>
-                      <div className="grid gap-1">
-                        <div className="flex items-center justify-between gap-2">
-                          <div className="font-medium">{["Marcos", "Julia", "Lucas"][i]}</div>
-                          <div className="text-xs text-muted-foreground">{["5 dias", "2 semanas", "1 mês"][i]} atrás</div>
-                        </div>
-                        <div className="text-sm font-semibold">{title}</div>
-                        <div className="text-sm text-muted-foreground">Produto conforme descrito. Muito satisfeito com a compra.</div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+            {/* Customer Reviews analytics */}
+            <CustomerReviews />
           </div>
         </div>
 

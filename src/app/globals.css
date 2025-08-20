@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import url("leaflet/dist/leaflet.css");
 
 /* ==========================================================================
    1. DEFINIÇÃO DAS VARIÁVEIS E FONTES GLOBAIS
@@ -211,3 +212,291 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .fade-up, .float-slow, .reveal { animation: none !important; transition: none !important; opacity: 1 !important; transform: none !important; }
 }
+
+/* ========================================================================== */
+/* Componente: Zona de Upload de Arquivos (Produtos)                          */
+/* ========================================================================== */
+.file-upload-zone {
+  position: relative;
+  display: flex;
+  min-height: 13rem; /* min-h-52 */
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 0.75rem; /* rounded-xl */
+  border: 2px dashed var(--border);
+  padding: 1rem; /* p-4 */
+  transition: background-color 0.2s ease-in-out;
+}
+.file-upload-zone[data-dragging="true"] {
+  background-color: color-mix(in oklab, var(--accent) 50%, transparent);
+}
+.file-upload-zone__icon-wrapper {
+  margin-bottom: 0.5rem; /* mb-2 */
+  display: flex;
+  width: 2.75rem; /* size-11 */
+  height: 2.75rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px; /* rounded-full */
+  border: 1px solid var(--border);
+  background-color: var(--background);
+}
+.file-upload-zone__icon {
+  width: 1rem; /* size-4 */
+  height: 1rem;
+  opacity: 0.6;
+}
+.file-upload-zone__text {
+  margin-bottom: 0.375rem; /* mb-1.5 */
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+.file-upload-zone__hint {
+  font-size: 0.8rem;
+  color: var(--muted-foreground);
+}
+/* ========================================================================== */
+/* Componente: Mensagem de Chat (Estilo WhatsApp)                             */
+/* ========================================================================== */
+
+/* --- Contêiner Geral da Mensagem --- */
+.message-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem; /* space-y-1 */
+  max-width: var(--breakpoint-sm, 36rem); /* fallback 36rem */
+}
+
+/* Alinhamento para mensagens do agente e do usuário */
+.message-container--agent { align-self: flex-start; }
+.message-container--user { align-self: flex-end; }
+
+/* --- Wrapper da Bolha e Botão de Opções --- */
+.message-bubble-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* gap-2 */
+}
+.message-container--user .message-bubble-wrapper { flex-direction: row-reverse; }
+
+/* --- Bolha da Mensagem --- */
+.message-bubble {
+  display: inline-flex;
+  padding: 1rem; /* p-4 */
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) - 2px); /* rounded-md */
+}
+.message-bubble--agent { background-color: var(--muted); }
+.message-bubble--user {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  border-color: var(--primary);
+}
+
+/* --- Botão de Opções (...) --- */
+.message-options-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem; /* size-9 */
+  height: 2.25rem; /* size-9 */
+  border-radius: 9999px; /* rounded-full */
+  opacity: 0; /* Invisível por padrão */
+  transition: opacity 0.2s ease-in-out, background-color .2s ease-in-out;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+.message-bubble-wrapper:hover .message-options-btn { opacity: 1; }
+.message-options-btn:hover { background-color: var(--accent); }
+.message-options-btn svg {
+  width: 1rem;
+  height: 1rem;
+  color: var(--muted-foreground);
+}
+
+/* --- Metadados (Timestamp e Status) --- */
+.message-meta {
+  display: flex;
+  justify-content: flex-end; /* justify-end */
+  align-items: center;
+  gap: 0.5rem; /* gap-2 */
+  margin-top: 0.25rem; /* mt-1 */
+}
+.message-timestamp {
+  font-size: 0.6875rem; /* ~text-xs */
+  color: var(--muted-foreground);
+}
+
+/* --- Ícone de Status de Visualização --- */
+.message-status-icon {
+  width: 1rem; /* h-4 w-4 */
+  height: 1rem;
+  flex-shrink: 0;
+  color: var(--muted-foreground); /* Cor padrão para 'sent' e 'delivered' */
+}
+.message-status-icon--read { color: oklch(65% .17 241); /* azul */ }
+
+/* ========================================================================== */
+/* Charts: Revenue Chart color variables                                      */
+/* ========================================================================== */
+[data-chart="revenue-chart"] {
+  /* Map chart colors to theme tokens */
+  --color-desktop: var(--ring);
+  --color-mobile: var(--secondary);
+}
+.dark [data-chart="revenue-chart"] {
+  --color-desktop: var(--primary);
+  --color-mobile: var(--secondary);
+}
+
+/* Locator UI helpers */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.625rem;
+  border-radius: 9999px;
+  border: 1px solid var(--border);
+  background: var(--background);
+  color: var(--foreground);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: background-color .2s ease, color .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+.chip[data-active="true"] {
+  background: var(--accent);
+  color: var(--accent-foreground);
+  border-color: color-mix(in oklab, var(--accent) 50%, var(--border));
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06) inset;
+}
+
+.searchbar {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .5rem .75rem;
+  border-radius: 9999px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  box-shadow: 0 2px 12px rgba(0,0,0,.06);
+  flex-wrap: wrap;
+}
+.searchbar > * { min-width: 0; }
+.searchbar .md\:flex { flex-wrap: nowrap; }
+.searchbar input {
+  flex: 1;
+  outline: none;
+  background: transparent;
+}
+
+.popup-card-enter { opacity: 0; transform: translateY(8px); }
+.popup-card-enter-active { opacity: 1; transform: translateY(0); transition: all .18s ease; }
+.popup-card-exit { opacity: 1; transform: translateY(0); }
+.popup-card-exit-active { opacity: 0; transform: translateY(8px); transition: all .18s ease; }
+
+.bottom-sheet {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  background: var(--card);
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
+  border: 1px solid var(--border);
+  box-shadow: 0 -10px 30px rgba(0,0,0,.2);
+}
+.bottom-sheet__grabber { width: 44px; height: 4px; border-radius: 9999px; background: var(--muted-foreground); opacity: .4; margin: .5rem auto; }
+
+.map-container { position: relative; }
+.map-root { width: 100%; height: 100%; }
+
+/* Hide scrollbar utility for horizontal carousels */
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Leaflet pane ordering: keep below sticky search (>= 1200) */
+.leaflet-pane { z-index: 200 !important; }
+.leaflet-overlay-pane { z-index: 300 !important; }
+.leaflet-marker-pane { z-index: 400 !important; }
+.leaflet-popup-pane { z-index: 500 !important; }
+.leaflet-control-container { z-index: 600 !important; }
+
+/* Melhorar visibilidade do input[type=range] (slider de raio) */
+input[type=range] {
+  height: 1.5rem;
+  background: linear-gradient(to right, var(--accent) 0%, var(--accent) 100%);
+  border-radius: 9999px;
+  outline: none;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+}
+input[type=range]::-webkit-slider-runnable-track {
+  height: 6px;
+  background: var(--muted);
+  border-radius: 9999px;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--foreground);
+  border: 2px solid var(--accent);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.10);
+  cursor: pointer;
+  margin-top: -6px;
+}
+input[type=range]:focus::-webkit-slider-thumb {
+  outline: 2px solid var(--accent);
+}
+input[type=range]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--foreground);
+  border: 2px solid var(--accent);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.10);
+  cursor: pointer;
+}
+input[type=range]::-ms-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--foreground);
+  border: 2px solid var(--accent);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.10);
+  cursor: pointer;
+}
+input[type=range]::-ms-fill-lower {
+  background: var(--muted);
+  border-radius: 9999px;
+}
+input[type=range]::-ms-fill-upper {
+  background: var(--muted);
+  border-radius: 9999px;
+}
+input[type=range]:focus {
+  outline: none;
+}
+input[type=range]:focus::-webkit-slider-thumb {
+  box-shadow: 0 0 0 3px var(--accent);
+}
+input[type=range]:focus::-ms-thumb {
+  box-shadow: 0 0 0 3px var(--accent);
+}
+input[type=range]::-webkit-slider-thumb {
+  transition: box-shadow .2s;
+}
+input[type=range]::-moz-range-thumb {
+  transition: box-shadow .2s;
+}
+input[type=range]::-ms-thumb {
+  transition: box-shadow .2s;
+}
+
+/* Suggestions panel styles */
+#searchbar-container { position: relative; z-index: 1100; }
+.suggestions-panel { border-radius: 1rem; box-shadow: 0 10px 30px rgba(0,0,0,.15); z-index: 1300; }
+

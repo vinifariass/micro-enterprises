@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import "./product-card.css";
 import { defaultBusinessConfig } from '@/config/business';
 import Script from 'next/script';
 import ClientAnalytics from '@/components/ClientAnalytics';

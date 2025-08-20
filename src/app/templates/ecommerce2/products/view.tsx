@@ -51,29 +51,31 @@ export default function ProductsView() {
 
         <div className="mt-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
           {PRODUCTS.map((p) => (
-            <div key={p.id} data-slot="card" className="relative bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+            <div key={p.id} className="product-card">
               <label className="absolute left-2 top-2 z-10 inline-flex items-center gap-2 rounded-full bg-white/80 px-2 py-1 text-xs shadow-sm">
                 <input type="checkbox" checked={!!selected[p.id]} onChange={() => onToggle(p.id)} className="size-4 rounded border-gray-300" />
                 Selecionar
               </label>
-              <Link className="block" href={`/templates/ecommerce2/products/${p.id}`}>
-                <figure className="aspect-square w-full bg-gray-50">
+              <Link className="product-card__link" href={`/templates/ecommerce2/products/${p.id}`}>
+                <figure className="product-card__figure">
                   {p.image && (
-                    <Image src={p.image} alt={p.name} width={800} height={800} className="aspect-square w-full object-contain" />
+                    <Image src={p.image} alt={p.name} width={800} height={800} className="product-card__image" />
                   )}
                 </figure>
               </Link>
-              <div data-slot="card-content" className="px-4 py-3">
-                <div className="flex justify-between items-start gap-3">
-                  <div className="min-w-0">
-                    <h3 className="text-sm font-semibold leading-tight truncate" title={p.name}>{p.name}</h3>
-                    <p className="text-xs text-gray-500">{/tee|shirt|camiseta/i.test(p.name) ? 'Apparel' : 'Sneakers'}</p>
-                  </div>
-                  <p className="text-sm font-semibold whitespace-nowrap">R$ {p.price.toFixed(2)}</p>
+              <div className="product-card__info">
+                <div>
+                  <h3 className="product-card__title" title={p.name}>{p.name}</h3>
+                  <p className="product-card__category">{/tee|shirt|camiseta/i.test(p.name) ? 'Apparel' : 'Sneakers'}</p>
                 </div>
+                <p className="product-card__price">R$ {p.price.toFixed(2)}</p>
               </div>
-              <div data-slot="card-footer" className="border-t border-gray-200 px-4 py-3">
-                <button className="inline-flex items-center justify-center w-full h-9 rounded-md text-sm border shadow-sm bg-white hover:bg-gray-50">
+              <div className="product-card__actions">
+                <button className="product-card__button product-card__button--wishlist" aria-label="Favoritar">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-heart"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A4.5 4.5 0 0 0 17.5 4c-1.74 0-3.41.81-4.5 2.09A6.02 6.02 0 0 0 8.5 4 4.5 4.5 0 0 0 4 8.5C4 10.79 5.5 12.54 7 14l5 5Z"/></svg>
+                </button>
+                <button className="product-card__button product-card__button--add-to-cart">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-plus"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
                   Adicionar ao carrinho
                 </button>
               </div>

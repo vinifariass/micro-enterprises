@@ -4,9 +4,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "./CartContext";
 import { PRODUCTS } from "./catalog";
+import { useToast } from "./Toast";
 
 export default function Storefront() {
   const { add, items, total, dec, clear } = useCart();
+  const { toast } = useToast();
 
   return (
     <main className="bg-white text-gray-900">
@@ -53,8 +55,9 @@ export default function Storefront() {
                   onClick={(e) => {
                     e.preventDefault();
                     add(p.id);
+                    toast({ title: "Adicionado ao carrinho", description: p.name });
                   }}
-                  className="mt-3 inline-flex items-center justify-center px-4 py-2 rounded border text-sm"
+                  className="mt-3 inline-flex items-center justify-center px-4 py-2 rounded border text-sm transition-colors hover:bg-black hover:text-white"
                 >
                   Adicionar
                 </button>

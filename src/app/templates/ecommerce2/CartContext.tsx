@@ -11,6 +11,7 @@ export type CartState = {
   total: number;
   add: (id: string, qty?: number) => void;
   dec: (id: string) => void;
+  remove: (id: string) => void;
   clear: () => void;
 };
 
@@ -34,6 +35,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setItems((curr) =>
       curr.flatMap((x) => (x.id !== id ? [x] : x.qty > 1 ? [{ ...x, qty: x.qty - 1 }] : []))
     );
+  const remove = (id: string) => setItems((curr) => curr.filter((x) => x.id !== id));
   const clear = () => setItems([]);
 
   const total = useMemo(
@@ -45,7 +47,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     [items]
   );
 
-  const value: CartState = { items, total, add, dec, clear };
+  const value: CartState = { items, total, add, dec, remove, clear };
   return <CartCtx.Provider value={value}>{children}</CartCtx.Provider>;
 }
 
