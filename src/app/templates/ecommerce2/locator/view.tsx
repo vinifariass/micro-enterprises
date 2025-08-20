@@ -57,6 +57,7 @@ export default function StoreLocatorView() {
   const [activeStore, setActiveStore] = React.useState<Store | null>(null);
   const [showSuggestions, setShowSuggestions] = React.useState(false);
   const [recent, setRecent] = React.useState<Suggestion[]>([]);
+  const [mounted, setMounted] = React.useState(false);
 
   const mapRef = React.useRef<LType.Map | null>(null);
   const markersLayerRef = React.useRef<LType.LayerGroup | null>(null);
@@ -84,6 +85,9 @@ export default function StoreLocatorView() {
       if (raw) setRecent(JSON.parse(raw));
     } catch {}
   }, []);
+
+  // Mark as mounted to avoid hydration mismatches on dynamic UI
+  React.useEffect(() => { setMounted(true); }, []);
   const saveRecent = React.useCallback((s: Suggestion) => {
     const entry: Suggestion = { ...s, kind: "recent" };
     const next = [entry, ...recent.filter((r) => r.title !== s.title)].slice(0, 5);
@@ -93,7 +97,7 @@ export default function StoreLocatorView() {
 
   // Init map
   React.useEffect(() => {
-    if (mapRef.current) return;
+  if (!mounted || mapRef.current) return;
     let canceled = false;
     (async () => {
       const leaflet = (await import("leaflet")).default;
@@ -152,11 +156,11 @@ export default function StoreLocatorView() {
   if (handler) window.removeEventListener("resize", handler);
   winResizeHandlerRef.current = null;
     };
-  }, [center.lat, center.lng]);
+  }, [center.lat, center.lng, mounted]);
 
   // Re-render markers when inputs change
   React.useEffect(() => {
-    if (!mapRef.current || !leafletRef.current) return;
+    if (!mounted || !mapRef.current || !leafletRef.current) return;
 
     if (markersLayerRef.current) markersLayerRef.current.remove();
     const layer = leafletRef.current.layerGroup();
@@ -187,7 +191,7 @@ export default function StoreLocatorView() {
     });
 
     layer.addTo(mapRef.current);
-  }, [boundsKey, category, query, center, radiusKm, router]);
+  }, [boundsKey, category, query, center, radiusKm, router, mounted]);
 
   const goToMyLocation = React.useCallback(() => {
     if (!navigator.geolocation) return;
@@ -199,6 +203,7 @@ export default function StoreLocatorView() {
   }, []);
 
   const results = React.useMemo(() => {
+    if (!mounted) return [] as { store: Store; km: number }[];
     let list = stores.map((s) => ({ store: s, km: distanceKm(center, { lat: s.lat, lng: s.lng }) }));
     if (mapRef.current) {
       const b = mapRef.current.getBounds();
@@ -353,10 +358,15 @@ export default function StoreLocatorView() {
           <Card className="p-3 h-[70vh] overflow-auto">
             <div className="mb-2 flex items-center justify-between">
               <div className="text-sm font-medium">Lojas nesta área</div>
-              <div className="text-xs text-muted-foreground">{results.length} resultados</div>
+              <div className="text-xs text-muted-foreground" suppressHydrationWarning>
+                {mounted ? `${results.length} resultados` : "—"}
+              </div>
             </div>
             <div className="space-y-2">
-              {results.map(({ store, km }) => (
+              {!mounted && (
+                <Card className="p-6 text-center text-sm text-muted-foreground">Carregando…</Card>
+              )}
+              {mounted && results.map(({ store, km }) => (
                 <Card key={store.id} className="p-3">
                   <div className="grid grid-cols-[auto,1fr,auto] items-center gap-3">
                     {store.image && (
@@ -382,7 +392,7 @@ export default function StoreLocatorView() {
                   </div>
                 </Card>
               ))}
-              {results.length === 0 && (
+              {mounted && results.length === 0 && (
                 <Card className="p-6 text-center text-sm text-muted-foreground">Sem lojas nesta área.</Card>
               )}
             </div>
@@ -395,7 +405,10 @@ export default function StoreLocatorView() {
         <div className="bottom-sheet p-2">
           <div className="bottom-sheet__grabber" />
           <div className="max-h-[40vh] overflow-auto space-y-2 p-2">
-            {results.map(({ store, km }) => (
+            {!mounted && (
+              <Card className="p-6 text-center text-sm text-muted-foreground">Carregando…</Card>
+            )}
+            {mounted && results.map(({ store, km }) => (
               <Card key={store.id} className="p-3" onClick={() => { setActiveStore(store); if (mapRef.current) mapRef.current.setView([store.lat, store.lng], 16); }}>
                 <div className="grid grid-cols-[auto,1fr,auto] items-center gap-3">
                   {store.image && (
@@ -421,7 +434,7 @@ export default function StoreLocatorView() {
                 </div>
               </Card>
             ))}
-            {results.length === 0 && (
+            {mounted && results.length === 0 && (
               <Card className="p-6 text-center text-sm text-muted-foreground">Sem lojas nesta área.</Card>
             )}
           </div>
