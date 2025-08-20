@@ -2,40 +2,68 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { PRODUCTS } from "../catalog";
+import Filters, { type FiltersState } from "./Filters";
+import HeroCarousel from "./HeroCarousel";
 
-type Selected = Record<string, boolean>;
+type Favorites = Record<string, boolean>;
 
 export default function ProductsView() {
-  const [selected, setSelected] = useState<Selected>({});
-  const allChecked = useMemo(() => PRODUCTS.length > 0 && PRODUCTS.every(p => selected[p.id]), [selected]);
-  const anyChecked = useMemo(() => Object.values(selected).some(Boolean), [selected]);
+  const [favorites, setFavorites] = useState<Favorites>({});
+  const [filters, setFilters] = useState<FiltersState>({ categories: [], brands: [] });
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
+  // Load and persist favorites in localStorage
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("e2.favorites");
+      if (raw) setFavorites(JSON.parse(raw));
+    } catch {}
+  }, []);
+  useEffect(() => {
+    try {
+      localStorage.setItem("e2.favorites", JSON.stringify(favorites));
+    } catch {}
+  }, [favorites]);
+  const onToggleFav = (id: string) => setFavorites(prev => ({ ...prev, [id]: !prev[id] }));
 
-  const toggleAll = () => {
-    if (allChecked) setSelected({});
-    else {
-      const next: Selected = {};
-      PRODUCTS.forEach(p => { next[p.id] = true; });
-      setSelected(next);
-    }
-  };
+  // Derive categories/brands from product names (simple heuristic for demo)
+  const categories = useMemo(() => {
+    const set = new Set<string>();
+    PRODUCTS.forEach(p => set.add(/tee|shirt|camiseta/i.test(p.name) ? "Clothing" : "Shoes"));
+    return Array.from(set);
+  }, []);
+  const brands = ["Adidas", "Vans", "New Balance", "Batman"];
 
-  const onToggle = (id: string) => setSelected(prev => ({ ...prev, [id]: !prev[id] }));
+  const filtered = useMemo(() => {
+    return PRODUCTS.filter(p => {
+      const cat = /tee|shirt|camiseta/i.test(p.name) ? "Clothing" : "Shoes";
+      const brand = /adidas/i.test(p.name)
+        ? "Adidas"
+        : /vans/i.test(p.name)
+        ? "Vans"
+        : /new balance/i.test(p.name)
+        ? "New Balance"
+        : /batman/i.test(p.name)
+        ? "Batman"
+        : "";
+
+      const catOk = filters.categories.length ? filters.categories.includes(cat) : true;
+      const brandOk = filters.brands.length ? (brand && filters.brands.includes(brand)) : true;
+      return catOk && brandOk;
+    });
+  }, [filters]);
 
   return (
     <main className="bg-white text-gray-900 min-h-[60vh]">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {/* Hero carousel */}
+        <HeroCarousel className="mb-8" />
+
         <div className="flex flex-wrap items-center gap-3 justify-between">
-          <h1 className="text-2xl font-bold tracking-tight text-card-foreground">Produtos</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-card-foreground">Shop Products</h1>
           <div className="flex items-center gap-2">
-            <label className="inline-flex items-center gap-2 text-sm">
-              <input type="checkbox" checked={allChecked} onChange={toggleAll} className="size-4 rounded border-gray-300" />
-              Selecionar todos
-            </label>
-            <button disabled={!anyChecked} className="inline-flex items-center gap-2 h-9 px-3 rounded-md border text-sm shadow-sm disabled:opacity-50">
-              Remover selecionados
-            </button>
+            <button onClick={() => setShowMobileFilters(true)} className="lg:hidden inline-flex items-center gap-2 h-9 px-4 rounded-md border text-sm shadow-sm">Filters</button>
           </div>
         </div>
 
@@ -49,13 +77,30 @@ export default function ProductsView() {
           </div>
         </div>
 
-        <div className="mt-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-          {PRODUCTS.map((p) => (
+        <div className="mt-6 flex gap-8">
+          {/* Desktop sidebar */}
+          <div className="hidden lg:block">
+            <Filters values={filters} onChange={setFilters} allCategories={categories} allBrands={brands} />
+          </div>
+
+          {/* Products grid */}
+          <div className="flex-1">
+            <div className="mb-4 text-sm text-muted-foreground">{filtered.length} products found</div>
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+          {filtered.map((p) => (
             <div key={p.id} className="product-card">
-              <label className="absolute left-2 top-2 z-10 inline-flex items-center gap-2 rounded-full bg-white/80 px-2 py-1 text-xs shadow-sm">
-                <input type="checkbox" checked={!!selected[p.id]} onChange={() => onToggle(p.id)} className="size-4 rounded border-gray-300" />
-                Selecionar
-              </label>
+              {/* Favorite heart overlay */}
+              <button
+                type="button"
+                aria-label={favorites[p.id] ? "Remover dos favoritos" : "Adicionar aos favoritos"}
+                aria-pressed={!!favorites[p.id]}
+                className="product-card__fav"
+                onClick={() => onToggleFav(p.id)}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`lucide lucide-heart ${favorites[p.id] ? 'text-primary' : ''}`}>
+                  <path d="M19 14c1.49-1.46 3-3.21 3-5.5A4.5 4.5 0 0 0 17.5 4c-1.74 0-3.41.81-4.5 2.09A6.02 6.02 0 0 0 8.5 4 4.5 4.5 0 0 0 4 8.5C4 10.79 5.5 12.54 7 14l5 5Z" fill={favorites[p.id] ? 'currentColor' : 'none'} />
+                </svg>
+              </button>
               <Link className="product-card__link" href={`/templates/ecommerce2/products/${p.id}`}>
                 <figure className="product-card__figure">
                   {p.image && (
@@ -71,9 +116,6 @@ export default function ProductsView() {
                 <p className="product-card__price">R$ {p.price.toFixed(2)}</p>
               </div>
               <div className="product-card__actions">
-                <button className="product-card__button product-card__button--wishlist" aria-label="Favoritar">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-heart"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A4.5 4.5 0 0 0 17.5 4c-1.74 0-3.41.81-4.5 2.09A6.02 6.02 0 0 0 8.5 4 4.5 4.5 0 0 0 4 8.5C4 10.79 5.5 12.54 7 14l5 5Z"/></svg>
-                </button>
                 <button className="product-card__button product-card__button--add-to-cart">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-plus"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
                   Adicionar ao carrinho
@@ -81,7 +123,18 @@ export default function ProductsView() {
               </div>
             </div>
           ))}
+            </div>
+          </div>
         </div>
+
+        {/* Mobile filters panel */}
+        {showMobileFilters && (
+          <div className="fixed inset-0 z-[60] bg-black/40 lg:hidden" onClick={() => setShowMobileFilters(false)}>
+            <div className="absolute left-0 top-0 h-full w-72 bg-background p-4" onClick={(e) => e.stopPropagation()}>
+              <Filters values={filters} onChange={setFilters} allCategories={categories} allBrands={brands} onClose={() => setShowMobileFilters(false)} />
+            </div>
+          </div>
+        )}
       </div>
     </main>
   );

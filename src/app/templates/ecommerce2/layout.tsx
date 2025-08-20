@@ -6,7 +6,7 @@ import Footer from "./Footer";
 import { ToastProvider } from "./Toast";
 import CartButton from "./CartButton";
 import * as React from "react";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import HeaderPad from "./HeaderPad";
 
 export const metadata: Metadata = {
@@ -19,7 +19,6 @@ const inter = Inter({ subsets: ["latin"], display: "swap" });
 export default function Ecommerce2Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className={inter.className}>
-      <SidebarProvider>
         <CartProvider>
           <ToastProvider>
             <HeaderPad>
@@ -41,7 +40,6 @@ export default function Ecommerce2Layout({ children }: { children: React.ReactNo
             <Footer />
           </ToastProvider>
         </CartProvider>
-      </SidebarProvider>
     </div>
   );
 }
