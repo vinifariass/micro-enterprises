@@ -131,9 +131,9 @@ export function ChatComponent() {
           <DialogFooter className="flex items-center border-t p-4 sm:justify-between">
             {selectedUsers.length > 0 ? (
               <div className="flex -space-x-2 overflow-hidden">
-                {selectedUsers.map((user) => (
+                    {selectedUsers.map((user) => (
                   <Avatar key={user.email} className="inline-block border-2 border-background">
-                    <AvatarImage src={user.avatar} />
+                    <AvatarImage src={user.avatar} alt={user.name} />
                     <AvatarFallback>{user.name[0]}</AvatarFallback>
                   </Avatar>
                 ))}

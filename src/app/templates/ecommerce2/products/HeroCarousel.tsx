@@ -3,6 +3,7 @@
 import * as React from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 export type HeroSlide = {
   title: string;
@@ -80,8 +81,7 @@ function Slide({ slide }: { slide: HeroSlide }) {
   return (
     <div className="relative inset-0 min-w-full">
       <div className="absolute inset-0 pointer-events-none">
-        {/* Using <img> to avoid Next/Image remote config */}
-        <img alt={slide.title} src={slide.imageUrl} className="h-full w-full object-cover" />
+  <Image alt={slide.title} src={slide.imageUrl} className="h-full w-full object-cover" fill sizes="100vw" />
         <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/60 to-transparent" />
       </div>
       <div className="relative flex h-full items-center">

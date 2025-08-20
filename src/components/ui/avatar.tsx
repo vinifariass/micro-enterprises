@@ -1,4 +1,5 @@
 import * as React from 'react'
+import Image from 'next/image'
 import { cn } from '@/lib/utils'
 
 type AvatarProps = React.HTMLAttributes<HTMLSpanElement>
@@ -11,8 +12,9 @@ export function Avatar({ className, children, ...props }: AvatarProps) {
   )
 }
 
-export function AvatarImage({ className, ...props }: React.ImgHTMLAttributes<HTMLImageElement>) {
-  return <img data-slot="avatar-image" className={cn('aspect-square size-full', className)} {...props} />
+export function AvatarImage({ className, alt = "", src = "", ...props }: React.ComponentProps<typeof Image>) {
+  // Note: provide a default size; callers can override via className or size props
+  return <Image data-slot="avatar-image" className={cn('aspect-square size-full', className)} alt={alt} src={src} width={40} height={40} {...props} />
 }
 
 export function AvatarFallback({ className, ...props }: React.HTMLAttributes<HTMLSpanElement>) {

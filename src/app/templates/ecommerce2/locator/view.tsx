@@ -6,8 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Navigation, Search, MessageCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
-import L from "leaflet";
+import type * as LType from "leaflet";
 import { stores, type Store } from "@/app/data/stores";
+import Image from "next/image";
 
 // Store type is imported from shared data
 
@@ -43,6 +44,7 @@ function distanceKm(a: { lat: number; lng: number }, b: { lat: number; lng: numb
 }
 
 function chipClass(active: boolean) {
+  void active; // reference to satisfy no-unused-vars
   return "chip";
 }
 
@@ -56,9 +58,10 @@ export default function StoreLocatorView() {
   const [showSuggestions, setShowSuggestions] = React.useState(false);
   const [recent, setRecent] = React.useState<Suggestion[]>([]);
 
-  const mapRef = React.useRef<L.Map | null>(null);
-  const markersLayerRef = React.useRef<L.LayerGroup | null>(null);
+  const mapRef = React.useRef<LType.Map | null>(null);
+  const markersLayerRef = React.useRef<LType.LayerGroup | null>(null);
   const [boundsKey, setBoundsKey] = React.useState<string>("");
+  const leafletRef = React.useRef<typeof import("leaflet") | null>(null);
 
   // Airbnb-like base suggestions
   const baseSuggestions: Suggestion[] = React.useMemo(
@@ -89,37 +92,44 @@ export default function StoreLocatorView() {
   // Init map
   React.useEffect(() => {
     if (mapRef.current) return;
-    const map = L.map("store-map", { zoomControl: false }).setView([center.lat, center.lng], 14);
-    mapRef.current = map;
+    let canceled = false;
+    (async () => {
+      const leaflet = (await import("leaflet")).default;
+      if (canceled) return;
+      leafletRef.current = (await import("leaflet")).default;
+      const map = leaflet.map("store-map", { zoomControl: false }).setView([center.lat, center.lng], 14);
+      mapRef.current = map;
 
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: "&copy; OpenStreetMap contributors",
-      maxZoom: 19,
-    }).addTo(map);
+      leaflet.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "&copy; OpenStreetMap contributors",
+        maxZoom: 19,
+      }).addTo(map);
 
-    L.control.zoom({ position: "bottomright" }).addTo(map);
+      leaflet.control.zoom({ position: "bottomright" }).addTo(map);
 
-    const updateBounds = () => {
-      const b = map.getBounds();
-      setBoundsKey(`${b.getSouth()}_${b.getWest()}_${b.getNorth()}_${b.getEast()}`);
-      const c = map.getCenter();
-      setCenter({ lat: c.lat, lng: c.lng });
-    };
-    map.on("moveend", updateBounds);
-    updateBounds();
-  }, []);
+      const updateBounds = () => {
+        const b = map.getBounds();
+        setBoundsKey(`${b.getSouth()}_${b.getWest()}_${b.getNorth()}_${b.getEast()}`);
+        const c = map.getCenter();
+        setCenter({ lat: c.lat, lng: c.lng });
+      };
+      map.on("moveend", updateBounds);
+      updateBounds();
+    })();
+    return () => { canceled = true; };
+  }, [center.lat, center.lng]);
 
   // Re-render markers when inputs change
   React.useEffect(() => {
-    if (!mapRef.current) return;
+    if (!mapRef.current || !leafletRef.current) return;
 
     if (markersLayerRef.current) markersLayerRef.current.remove();
-    const layer = L.layerGroup();
+    const layer = leafletRef.current.layerGroup();
     markersLayerRef.current = layer;
 
     const iconByCategory = (cat: Store["category"]) => {
       const emoji = { fashion: "👕", electronics: "📱", groceries: "🛒", home: "🏠", sports: "🏃" }[cat];
-      return L.divIcon({
+      return leafletRef.current!.divIcon({
         className: "",
         html: `<div style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:9999px;background:var(--card);border:1px solid var(--border);box-shadow:0 1px 4px rgba(0,0,0,.15);font-size:16px;">${emoji}</div>`,
         iconSize: [28, 28],
@@ -134,7 +144,7 @@ export default function StoreLocatorView() {
       const withinRadius = distanceKm(center, { lat: s.lat, lng: s.lng }) <= radiusKm;
       const eligible = inView && withinRadius && (category === "all" || s.category === category) && (!query || (`${s.name} ${s.tags.join(" ")} ${s.address}`.toLowerCase().includes(query.toLowerCase())));
       if (!eligible) return;
-      const marker = L.marker([s.lat, s.lng], { icon: iconByCategory(s.category) });
+      const marker = leafletRef.current!.marker([s.lat, s.lng], { icon: iconByCategory(s.category) });
       marker.on("click", () => {
         router.push(`/store/${s.id}`);
       });
@@ -142,7 +152,7 @@ export default function StoreLocatorView() {
     });
 
     layer.addTo(mapRef.current);
-  }, [boundsKey, category, query]);
+  }, [boundsKey, category, query, center, radiusKm, router]);
 
   const goToMyLocation = React.useCallback(() => {
     if (!navigator.geolocation) return;
@@ -163,7 +173,7 @@ export default function StoreLocatorView() {
     if (category !== "all") list = list.filter(({ store }) => store.category === category);
     if (query) list = list.filter(({ store }) => (`${store.name} ${store.tags.join(" ")} ${store.address}`.toLowerCase().includes(query.toLowerCase())));
     return list.sort((a, b) => a.km - b.km);
-  }, [boundsKey, category, query, center, radiusKm]);
+  }, [category, query, center, radiusKm]);
 
   const onPickSuggestion = React.useCallback((s: Suggestion) => {
     setShowSuggestions(false);
@@ -282,7 +292,7 @@ export default function StoreLocatorView() {
               <Card className="p-4 shadow-xl">
                 <div className="flex items-start gap-4">
                   {activeStore.image && (
-                    <img src={activeStore.image} alt={activeStore.name} className="w-20 h-20 object-cover rounded-lg border" />
+                    <Image src={activeStore.image} alt={activeStore.name} width={80} height={80} className="w-20 h-20 object-cover rounded-lg border" />
                   )}
                   <div className="flex-1">
                     <div className="text-base font-semibold">{activeStore.name}</div>
@@ -315,7 +325,7 @@ export default function StoreLocatorView() {
                 <Card key={store.id} className="p-3">
                   <div className="grid grid-cols-[auto,1fr,auto] items-center gap-3">
                     {store.image && (
-                      <img src={store.image} alt={store.name} className="w-14 h-14 object-cover rounded-md border" />
+                      <Image src={store.image} alt={store.name} width={56} height={56} className="w-14 h-14 object-cover rounded-md border" />
                     )}
                     <div className="min-w-0">
                       <div className="text-sm font-semibold truncate">{store.name}</div>
@@ -354,7 +364,7 @@ export default function StoreLocatorView() {
               <Card key={store.id} className="p-3" onClick={() => { setActiveStore(store); if (mapRef.current) mapRef.current.setView([store.lat, store.lng], 16); }}>
                 <div className="grid grid-cols-[auto,1fr,auto] items-center gap-3">
                   {store.image && (
-                    <img src={store.image} alt={store.name} className="w-12 h-12 object-cover rounded-md border" />
+                    <Image src={store.image} alt={store.name} width={48} height={48} className="w-12 h-12 object-cover rounded-md border" />
                   )}
                   <div className="min-w-0">
                     <div className="text-sm font-semibold truncate">{store.name}</div>

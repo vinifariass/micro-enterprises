@@ -6,7 +6,6 @@ import { cn } from "@/lib/utils";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 
 export type ChatMessage = {
 	id: string
@@ -82,7 +81,6 @@ export function ChatComponent({ className, participant, messages, onSend, onSend
 				{/* Header */}
 				<div className="flex items-center gap-3 border-b px-4 py-3">
 					<Avatar>
-						{/* eslint-disable-next-line @next/next/no-img-element */}
 						{participant.avatar ? (
 							<AvatarImage src={participant.avatar} alt="avatar" />
 						) : (

@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { ChevronLeft, ChevronRight, Calendar } from "lucide-react";
 import { templates } from "@/app/data/templates";
 
@@ -20,16 +21,16 @@ export default function TemplatesCarousel() {
   const [atStart, setAtStart] = React.useState(true);
   const [atEnd, setAtEnd] = React.useState(false);
 
-  const onScroll = () => {
+  const onScroll = React.useCallback(() => {
     const el = ref.current;
     if (!el) return;
     setAtStart(el.scrollLeft <= 4);
     setAtEnd(el.scrollLeft + el.clientWidth >= el.scrollWidth - 4);
-  };
+  }, [ref]);
 
   React.useEffect(() => {
     onScroll();
-  }, []);
+  }, [onScroll]);
 
   return (
     <section className="py-12 md:py-20 lg:py-24">
@@ -59,7 +60,7 @@ export default function TemplatesCarousel() {
               <div key={t.slug} className="carousel-item w-full flex-none snap-start px-2 sm:w-1/2 sm:px-4 lg:w-1/3">
                 <div className="bg-card text-card-foreground gap-6 rounded-xl border flex h-full flex-col overflow-hidden p-0 shadow-sm transition-shadow hover:shadow-md">
                   <div className="relative h-40 overflow-hidden sm:h-48 md:h-52">
-                    <img alt={t.title} className="object-cover transition-transform duration-300 hover:scale-105 w-full h-full" src={t.image || "/images/streetwear/tee-worldwide.jpg"} />
+                    <Image alt={t.title} className="object-cover transition-transform duration-300 hover:scale-105 w-full h-full" src={t.image || "/images/streetwear/tee-worldwide.jpg"} fill sizes="(max-width: 1024px) 100vw, 33vw" />
                   
                   </div>
                   <div className="px-6 flex-grow">

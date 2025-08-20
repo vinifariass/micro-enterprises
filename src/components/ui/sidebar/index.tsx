@@ -39,7 +39,7 @@ export function Sidebar({ className, children }: { className?: string; children:
   );
 }
 
-export function SidebarHeader({ className, children }: { className?: string; children?: React.ReactNode }) {
+export function SidebarHeader({ className }: { className?: string }) {
   const ctx = React.useContext(SidebarContext)!;
   return (
     <div className={cn("flex items-center justify-between border-b px-4 py-3", className)}>

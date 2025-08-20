@@ -9,7 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import {
   Bell,
@@ -99,9 +99,7 @@ function KpiCard({ label, value, delta, trend }: { label: string; value: string;
 }
 
 export default function SalesDashboardView() {
-  const [segment, setSegment] = React.useState<"desktop" | "mobile">("desktop");
-  const totalDesktop = 13746;
-  const totalMobile = 13580;
+  // future wiring for segment totals
 
   return (
     <div className="min-h-svh w-full bg-gray-50">

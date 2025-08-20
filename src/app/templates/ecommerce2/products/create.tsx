@@ -5,6 +5,7 @@ import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Upload, ArrowLeft } from "lucide-react";
+import Image from "next/image";
 
 function ProductDetailsCard() {
   return (
@@ -78,7 +79,7 @@ function ProductImagesCard() {
             <div className="flex flex-wrap gap-2">
               {files.map((file, i) => (
                 <div key={i} className="relative h-24 w-24 rounded-lg overflow-hidden border">
-                  <img src={URL.createObjectURL(file)} alt={file.name} className="object-cover w-full h-full" />
+                  <Image src={URL.createObjectURL(file)} alt={file.name} width={96} height={96} className="object-cover w-full h-full" />
                 </div>
               ))}
               <Input ref={inputRef} type="file" multiple className="sr-only" onChange={handleSelect} />

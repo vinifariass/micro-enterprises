@@ -1,5 +1,6 @@
 "use client";
 import * as React from 'react'
+import Image from 'next/image'
 import { ChatComponent, type ChatMessage, type Participant } from "@/app/components/Chat";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
@@ -153,8 +154,7 @@ export default function ChatView() {
                   >
                     <span className="relative flex size-8 shrink-0 rounded-full overflow-visible md:size-10">
                       {c.participant.avatar ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img className="aspect-square size-full" alt="avatar image" src={c.participant.avatar} />
+                        <Image className="aspect-square size-full" alt="avatar image" src={c.participant.avatar} width={40} height={40} />
                       ) : (
                         <span className="bg-muted flex size-full items-center justify-center rounded-full">{c.participant.initials ?? c.participant.name.split(' ').map(p=>p[0]).slice(0,2).join('')}</span>
                       )}
@@ -268,7 +268,6 @@ function CallDialog({ open, type, participant, onClose, onEnd }: CallDialogProps
     if (!open) {
       cleanup();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   function cleanup() {

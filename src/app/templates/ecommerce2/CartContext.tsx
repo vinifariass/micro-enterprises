@@ -1,7 +1,6 @@
 "use client";
 
 import { createContext, useContext, useMemo, useState } from "react";
-import type { Product } from "./catalog";
 import { PRODUCTS } from "./catalog";
 
 export type CartItem = { id: string; qty: number };

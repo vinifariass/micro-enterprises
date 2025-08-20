@@ -3,11 +3,12 @@
 import * as React from "react";
 import { notFound } from "next/navigation";
 import { useParams } from "next/navigation";
-import { stores, getStoreById, storeReviews, type Review } from "@/app/data/stores";
+import { getStoreById, storeReviews, type Review } from "@/app/data/stores";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MapPin, Globe } from "lucide-react";
+import Image from "next/image";
 
 function Stars({ value }: { value: number }) {
   return (
@@ -33,7 +34,15 @@ export default function StoreDetailsPage() {
       <div className="md:col-span-8 space-y-4">
         <Card className="p-5">
           <div className="flex items-start gap-4">
-            {store.image && <img src={store.image} alt={store.name} className="h-24 w-24 rounded-lg object-cover border" />}
+            {store.image && (
+              <Image
+                src={store.image}
+                alt={store.name}
+                width={96}
+                height={96}
+                className="h-24 w-24 rounded-lg object-cover border"
+              />
+            )}
             <div className="flex-1 min-w-0">
               <h1 className="text-xl font-semibold truncate">{store.name}</h1>
               <div className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
@@ -66,7 +75,13 @@ export default function StoreDetailsPage() {
               <Card key={r.id} className="p-4">
                 <div className="flex items-start gap-3">
                   {r.avatar ? (
-                    <img src={r.avatar} alt={r.user} className="h-10 w-10 rounded-full object-cover border" />
+                    <Image
+                      src={r.avatar}
+                      alt={r.user}
+                      width={40}
+                      height={40}
+                      className="h-10 w-10 rounded-full object-cover border"
+                    />
                   ) : (
                     <div className="h-10 w-10 rounded-full border bg-muted" />
                   )}
