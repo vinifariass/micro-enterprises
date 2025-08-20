@@ -58,7 +58,7 @@ export default function TemplatesIndex() {
         <div className="flex flex-col gap-4 mb-6">
           <div className="flex items-center gap-4">
             <Button asChild variant="outline">
-              <a href="/">Voltar para a Home</a>
+              <Link href="/">Voltar para a Home</Link>
             </Button>
             <h1 className="text-3xl font-bold">Templates</h1>
           </div>

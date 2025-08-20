@@ -6,9 +6,11 @@ export function TooltipProvider({ children }: { children: React.ReactNode }) {
 export function Tooltip({ children }: { children: React.ReactNode }) {
   return <>{children}</>
 }
-export function TooltipTrigger({ asChild, children, ...props }: any) {
+type TriggerProps = React.HTMLAttributes<HTMLSpanElement> & { asChild?: boolean; children: React.ReactNode }
+export function TooltipTrigger({ children, ...props }: TriggerProps) {
   return <span {...props}>{children}</span>
 }
-export function TooltipContent({ children, ...props }: any) {
+type ContentProps = React.HTMLAttributes<HTMLSpanElement> & { children: React.ReactNode }
+export function TooltipContent({ children, ...props }: ContentProps) {
   return <span {...props}>{children}</span>
 }

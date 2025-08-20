@@ -6,10 +6,14 @@ import { useEffect, useMemo, useState } from "react";
 import { PRODUCTS } from "../catalog";
 import Filters, { type FiltersState } from "./Filters";
 import HeroCarousel from "./HeroCarousel";
+import { useCart } from "../CartContext";
+import { useToast } from "../Toast";
 
 type Favorites = Record<string, boolean>;
 
 export default function ProductsView() {
+  const { add } = useCart();
+  const { toast } = useToast();
   const [favorites, setFavorites] = useState<Favorites>({});
   const [filters, setFilters] = useState<FiltersState>({ categories: [], brands: [] });
   const [showMobileFilters, setShowMobileFilters] = useState(false);
@@ -116,7 +120,7 @@ export default function ProductsView() {
                 <p className="product-card__price">R$ {p.price.toFixed(2)}</p>
               </div>
               <div className="product-card__actions">
-                <button className="product-card__button product-card__button--add-to-cart">
+                <button className="product-card__button product-card__button--add-to-cart" onClick={() => { add(p.id, 1); toast({ title: "Adicionado ao carrinho", description: p.name }); }}>
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-plus"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
                   Adicionar ao carrinho
                 </button>

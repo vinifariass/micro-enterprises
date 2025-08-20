@@ -297,8 +297,11 @@ function CallDialog({ open, type, participant, onClose, onEnd }: CallDialogProps
         // screen
         // Note: some browsers block audio for getDisplayMedia unless explicitly allowed.
         // Keeping it video-only here.
-        // @ts-ignore
-        stream = await (navigator.mediaDevices as any).getDisplayMedia({ video: true });
+        const getDisplayMedia = (navigator.mediaDevices as MediaDevices & { getDisplayMedia?: (opts: DisplayMediaStreamOptions) => Promise<MediaStream> }).getDisplayMedia as
+          | ((opts: DisplayMediaStreamOptions) => Promise<MediaStream>)
+          | undefined;
+        if (!getDisplayMedia) throw new Error('Screen sharing not supported in this browser');
+        stream = await getDisplayMedia({ video: true });
       }
       streamRef.current = stream;
       if (videoRef.current && (type === 'video' || type === 'screen')) {
@@ -307,8 +310,8 @@ function CallDialog({ open, type, participant, onClose, onEnd }: CallDialogProps
       }
       setRunning(true);
       timerRef.current = window.setInterval(() => setSeconds(s => s + 1), 1000);
-    } catch (e: any) {
-      setError(e?.message ?? 'Unable to start media');
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : 'Unable to start media');
     }
   }
 

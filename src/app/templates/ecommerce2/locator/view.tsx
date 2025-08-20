@@ -168,6 +168,7 @@ export default function StoreLocatorView() {
   const onPickSuggestion = React.useCallback((s: Suggestion) => {
     setShowSuggestions(false);
     if (s.id === "nearby") {
+      // call the stable callback; this is allowed since it's not a hook, just a memoized function
       useMyLocation();
       return;
     }
@@ -182,7 +183,7 @@ export default function StoreLocatorView() {
     const onDocPointerDown = (e: PointerEvent) => {
       const container = document.getElementById("searchbar-container");
       if (!container) return;
-      if (!(container as any).contains(e.target)) setShowSuggestions(false);
+      if (!container.contains(e.target as Node)) setShowSuggestions(false);
     };
     document.addEventListener("pointerdown", onDocPointerDown);
     return () => document.removeEventListener("pointerdown", onDocPointerDown);
@@ -211,7 +212,7 @@ export default function StoreLocatorView() {
             />
             <div className="hidden md:flex items-center gap-2">
               {(["all", "fashion", "electronics", "groceries", "home", "sports"] as const).map((c) => (
-                <button key={c} className={chipClass(category === c)} data-active={category === c} onClick={() => setCategory(c as any)}>
+                <button key={c} className={chipClass(category === c)} data-active={category === c} onClick={() => setCategory(c)}>
                   {c}
                 </button>
               ))}
