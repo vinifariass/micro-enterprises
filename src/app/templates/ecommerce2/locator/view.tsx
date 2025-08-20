@@ -62,6 +62,7 @@ export default function StoreLocatorView() {
   const markersLayerRef = React.useRef<LType.LayerGroup | null>(null);
   const [boundsKey, setBoundsKey] = React.useState<string>("");
   const leafletRef = React.useRef<typeof import("leaflet") | null>(null);
+  const resizeObsRef = React.useRef<ResizeObserver | null>(null);
 
   // Airbnb-like base suggestions
   const baseSuggestions: Suggestion[] = React.useMemo(
@@ -107,6 +108,30 @@ export default function StoreLocatorView() {
 
       leaflet.control.zoom({ position: "bottomright" }).addTo(map);
 
+      // Ensure Leaflet recalculates size once the container is actually laid out
+      map.whenReady(() => {
+        map.invalidateSize();
+      });
+      // Next frame + slight delay cover font loading/layout shifts
+      requestAnimationFrame(() => map.invalidateSize());
+      setTimeout(() => map.invalidateSize(), 300);
+
+      // Observe container size changes to keep map sized correctly
+      const containerEl = document.getElementById("store-map");
+      if (containerEl && "ResizeObserver" in window) {
+        const ro = new ResizeObserver(() => {
+          if (mapRef.current) mapRef.current.invalidateSize();
+        });
+        ro.observe(containerEl);
+        resizeObsRef.current = ro;
+      }
+
+  // Fallback: on window resize
+  const onWinResize = () => map.invalidateSize();
+  window.addEventListener("resize", onWinResize);
+  // Store on a ref for cleanup
+  (window as any).__locatorOnResize = onWinResize;
+
       const updateBounds = () => {
         const b = map.getBounds();
         setBoundsKey(`${b.getSouth()}_${b.getWest()}_${b.getNorth()}_${b.getEast()}`);
@@ -116,7 +141,15 @@ export default function StoreLocatorView() {
       map.on("moveend", updateBounds);
       updateBounds();
     })();
-    return () => { canceled = true; };
+    return () => {
+      canceled = true;
+      if (resizeObsRef.current) {
+        try { resizeObsRef.current.disconnect(); } catch {}
+        resizeObsRef.current = null;
+      }
+      const handler = (window as any).__locatorOnResize as ((this: Window, ev: UIEvent) => any) | undefined;
+      if (handler) window.removeEventListener("resize", handler);
+    };
   }, [center.lat, center.lng]);
 
   // Re-render markers when inputs change
@@ -285,7 +318,7 @@ export default function StoreLocatorView() {
       {/* Map + Desktop list */}
       <div className="mx-auto grid max-w-6xl md:grid-cols-12 gap-3 p-3">
         <Card className="map-container relative md:col-span-8 h-[60vh] md:h-[70vh]">
-          <div id="store-map" className="map-root rounded-xl" />
+          <div id="store-map" className="map-root rounded-xl overflow-hidden absolute inset-0" />
 
           {activeStore && (
             <div className="popup-card-enter popup-card-enter-active absolute left-3 bottom-3 right-3 md:left-3 md:right-auto md:max-w-sm z-20">
