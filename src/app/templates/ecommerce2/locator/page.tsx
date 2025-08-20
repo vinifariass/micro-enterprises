@@ -1,6 +1,6 @@
-import View from "./view";
+"use client";
 
-export const dynamic = "force-static";
+import View from "./view";
 
 export default function Page() {
   return <View />;

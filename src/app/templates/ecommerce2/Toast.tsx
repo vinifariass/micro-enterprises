@@ -33,13 +33,13 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
     <Ctx.Provider value={value}>
       {children}
       {/* Viewport */}
-      <div className="pointer-events-none fixed bottom-4 right-4 z-[2000] flex w-[calc(100%-1rem)] max-w-sm flex-col gap-2">
+  <div className="pointer-events-none fixed bottom-4 right-4 z-[2000] flex w-[calc(100%-1rem)] max-w-sm flex-col gap-2">
         {items.map((t) => (
           <div
             key={t.id}
             role="status"
             aria-live="polite"
-            className="pointer-events-auto rounded-xl border bg-background/95 shadow-lg backdrop-blur p-4 text-sm"
+    className="pointer-events-auto rounded-md border bg-card text-card-foreground shadow-lg p-4 text-sm"
           >
             {t.title && <div className="font-medium">{t.title}</div>}
             {t.description && <div className="text-muted-foreground mt-1">{t.description}</div>}
