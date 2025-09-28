@@ -23,6 +23,7 @@ import {
   Pie,
   Cell,
 } from "recharts";
+import type { TooltipProps } from "recharts";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -266,7 +267,7 @@ const ICON_MAP: Record<string, JSX.Element> = {
   ),
 };
 
-function ExpensesTooltip({ active, payload }: any) {
+function ExpensesTooltip({ active, payload }: TooltipProps<number, string>) {
   if (!active || !payload?.length) return null;
   const item = payload[0];
   return (

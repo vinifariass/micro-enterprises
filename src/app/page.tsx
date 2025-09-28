@@ -192,7 +192,7 @@ export default function Home() {
             </div>
             <div className="flex w-full max-w-md flex-col gap-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-xl">
               <div className="rounded-2xl bg-slate-100 p-4 text-sm text-slate-600">
-                "Voce envia logo, cores e ideia; nos cuidamos do layout, conteudo e configuracoes tecnicas." - VFS Consultoria
+                &quot;Voce envia logo, cores e ideia; nos cuidamos do layout, conteudo e configuracoes tecnicas.&quot; - VFS Consultoria
               </div>
               <div className="grid gap-3 text-xs text-slate-500">
                 <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4">
@@ -346,7 +346,7 @@ export default function Home() {
                         <Text className="text-xs text-slate-500">{item.role}</Text>
                       </div>
                     </div>
-                    <Text className="text-sm text-slate-600">"{item.quote}"</Text>
+                    <Text className="text-sm text-slate-600">&quot;{item.quote}&quot;</Text>
                   </CardContent>
                 </Card>
               ))}

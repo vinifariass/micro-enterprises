@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import { useCart } from "./CartContext";
 import type { CartState } from "./CartContext";
@@ -224,7 +225,7 @@ function FlashSaleHighlight() {
           <span className="mb-4 inline-flex items-center justify-center rounded-md bg-rose-500 px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-white">
             Flash Sale
           </span>
-          <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Don't Miss Out!</h2>
+          <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Don&apos;t Miss Out!</h2>
           <p className="mt-4 text-base text-gray-600">
             Limited time offer on our best-selling gaming monitor. Get 40% off while stocks last. Sale ends soon!
           </p>
@@ -248,12 +249,12 @@ function FlashSaleHighlight() {
             <button className="inline-flex h-10 w-full items-center justify-center rounded-md bg-black px-6 text-sm font-semibold text-white transition hover:bg-black/90 sm:w-auto">
               Shop the Sale
             </button>
-            <a
+            <Link
               href="/templates/ecommerce2/products"
               className="inline-flex h-10 w-full items-center justify-center rounded-md border border-gray-300 px-6 text-sm font-semibold text-gray-900 transition hover:bg-gray-100 sm:w-auto"
             >
               View Product Details
-            </a>
+            </Link>
           </div>
         </div>
       </div>

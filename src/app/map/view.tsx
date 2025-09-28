@@ -16,7 +16,7 @@ const DefaultIcon = L.icon({
   shadowUrl,
   iconAnchor: [12, 41],
 });
-L.Marker.prototype.options.icon = DefaultIcon as any;
+L.Marker.prototype.options.icon = DefaultIcon;
 
 export default function MapView() {
   const [query, setQuery] = React.useState("");

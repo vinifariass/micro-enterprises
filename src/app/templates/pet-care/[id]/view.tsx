@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { CARETAKERS } from "../data";
 import { Card, CardContent } from "@/components/ui/card";
@@ -52,7 +53,13 @@ export function CaretakerDetail({ id }: CaretakerDetailProps) {
               </div>
             </div>
             <div className="relative h-64 w-full overflow-hidden rounded-3xl border border-slate-200">
-              <img src={caretaker.photo} alt={caretaker.name} className="h-full w-full object-cover" />
+              <Image
+                src={caretaker.photo}
+                alt={caretaker.name}
+                fill
+                sizes="(min-width: 1024px) 40vw, (min-width: 768px) 60vw, 90vw"
+                className="object-cover"
+              />
             </div>
           </div>
           <div className="flex flex-wrap gap-3">
