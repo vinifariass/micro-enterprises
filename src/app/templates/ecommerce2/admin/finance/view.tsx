@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactElement } from "react";
 import {
   ArrowDown,
   ArrowUp,
@@ -23,7 +24,8 @@ import {
   Pie,
   Cell,
 } from "recharts";
-import type { TooltipProps } from "recharts";
+// Custom tooltip props type to avoid tight coupling with recharts internals
+type ExpensesTooltipItem = { payload?: { month?: string; value?: number } };
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -197,7 +199,7 @@ const WALLET_CARDS = [
   },
 ];
 
-const ICON_MAP: Record<string, JSX.Element> = {
+const ICON_MAP: Record<string, ReactElement> = {
   store: (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -267,13 +269,13 @@ const ICON_MAP: Record<string, JSX.Element> = {
   ),
 };
 
-function ExpensesTooltip({ active, payload }: TooltipProps<number, string>) {
+function ExpensesTooltip({ active, payload }: { active?: boolean; payload?: ExpensesTooltipItem[] }) {
   if (!active || !payload?.length) return null;
   const item = payload[0];
   return (
     <div className="rounded-md border bg-white px-3 py-2 text-xs shadow">
-      <div className="font-medium text-gray-800">{item.payload.month}</div>
-      <div className="text-gray-600">${item.payload.value}k</div>
+      <div className="font-medium text-gray-800">{item.payload?.month ?? ""}</div>
+      <div className="text-gray-600">${item.payload?.value ?? 0}k</div>
     </div>
   );
 }

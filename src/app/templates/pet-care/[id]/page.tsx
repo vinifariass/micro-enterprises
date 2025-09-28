@@ -11,6 +11,7 @@ export const metadata = {
   title: "Detalhes do cuidador - PetCare",
 };
 
-export default function Page({ params }: { params: { id: string } }) {
-  return <CaretakerDetail id={params.id} />;
+export default async function Page({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  return <CaretakerDetail id={id} />;
 }

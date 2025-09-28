@@ -1,7 +1,8 @@
 "use client";
 
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
+import type { StaticImageData } from "next/image";
 import "leaflet/dist/leaflet.css";
 import * as React from "react";
 
@@ -11,9 +12,9 @@ import iconRetinaUrl from "leaflet/dist/images/marker-icon-2x.png";
 import shadowUrl from "leaflet/dist/images/marker-shadow.png";
 
 const DefaultIcon = L.icon({
-  iconUrl,
-  iconRetinaUrl,
-  shadowUrl,
+  iconUrl: (iconUrl as StaticImageData).src,
+  iconRetinaUrl: (iconRetinaUrl as StaticImageData).src,
+  shadowUrl: (shadowUrl as StaticImageData).src,
   iconAnchor: [12, 41],
 });
 L.Marker.prototype.options.icon = DefaultIcon;
@@ -59,8 +60,8 @@ export default function MapView() {
           zoom={13}
           scrollWheelZoom
           style={{ height: "100%", width: "100%" }}
-          whenCreated={(map) => (mapRef.current = map)}
         >
+          <SetMap onReady={(m) => (mapRef.current = m)} />
           <TileLayer
             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -93,4 +94,12 @@ export default function MapView() {
       )}
     </div>
   );
+}
+
+function SetMap({ onReady }: { onReady: (map: L.Map) => void }) {
+  const map = useMap();
+  React.useEffect(() => {
+    onReady(map);
+  }, [map, onReady]);
+  return null;
 }

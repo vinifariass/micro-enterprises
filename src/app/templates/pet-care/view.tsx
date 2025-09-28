@@ -174,11 +174,11 @@ export default function PetCareView() {
                 <label className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">Raio (km)</label>
                 <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4">
                   <Slider
-                    value={[radius]}
+                    value={radius}
                     max={10}
                     min={1}
                     step={0.5}
-                    onValueChange={(values) => setRadius(values[0] ?? radius)}
+                    onValueChange={(v) => setRadius(v)}
                   />
                   <p className="mt-3 text-sm font-medium text-slate-700">Ate {radius.toFixed(1)} km de distancia</p>
                 </div>

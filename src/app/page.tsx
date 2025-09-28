@@ -141,7 +141,7 @@ export default function Home() {
               </Link>
             </Button>
             <Button className="rounded-full bg-slate-900 px-5 text-sm font-semibold text-slate-50 hover:bg-slate-800" asChild>
-              <Link href={defaultBusinessConfig.calendlyUrl} target="_blank" rel="noreferrer">
+              <Link href={defaultBusinessConfig.calendlyUrl ?? "#"} target="_blank" rel="noreferrer">
                 Agendar conversa
               </Link>
             </Button>
@@ -162,7 +162,7 @@ export default function Home() {
               <Text className="max-w-xl">{defaultBusinessConfig.description}</Text>
               <div className="flex flex-wrap gap-3">
                 <Button className="rounded-full bg-slate-900 px-6 text-sm font-semibold text-white hover:bg-slate-800" asChild>
-                  <Link href={defaultBusinessConfig.calendlyUrl} target="_blank" rel="noreferrer">
+                  <Link href={defaultBusinessConfig.calendlyUrl ?? "#"} target="_blank" rel="noreferrer">
                     Quero planejar meu site
                   </Link>
                 </Button>
@@ -316,7 +316,7 @@ export default function Home() {
                       ))}
                     </ul>
                     <Button className="mt-auto rounded-full bg-slate-900 px-5 text-sm font-semibold text-white hover:bg-slate-800" asChild>
-                      <Link href={plan.paymentLink} target="_blank" rel="noreferrer">
+                      <Link href={plan.paymentLink ?? "#"} target="_blank" rel="noreferrer">
                         Conversar sobre este plano
                       </Link>
                     </Button>

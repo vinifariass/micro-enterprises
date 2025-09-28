@@ -2,6 +2,7 @@
 
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
+import type { StaticImageData } from "next/image";
 import "leaflet/dist/leaflet.css";
 import { useEffect } from "react";
 import type { Caretaker } from "./data";
@@ -11,9 +12,9 @@ import iconRetinaUrl from "leaflet/dist/images/marker-icon-2x.png";
 import shadowUrl from "leaflet/dist/images/marker-shadow.png";
 
 const DefaultIcon = L.icon({
-  iconUrl,
-  iconRetinaUrl,
-  shadowUrl,
+  iconUrl: (iconUrl as StaticImageData).src,
+  iconRetinaUrl: (iconRetinaUrl as StaticImageData).src,
+  shadowUrl: (shadowUrl as StaticImageData).src,
   iconAnchor: [12, 41],
 });
 
