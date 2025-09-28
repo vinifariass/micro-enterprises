@@ -15,7 +15,7 @@ import {
   SidebarDrawer,
   SidebarContext,
 } from "@/components/ui/sidebar";
-import { LayoutDashboard, Shirt, PlusCircle, LineChart, Store, Cog } from "lucide-react";
+import { LayoutDashboard, Shirt, PlusCircle, LineChart, Wallet, Store, Cog } from "lucide-react";
 import HeaderPad from "../HeaderPad";
 
 const PRIMARY_LINKS = [
@@ -23,6 +23,7 @@ const PRIMARY_LINKS = [
   { label: "Produtos", href: "/templates/ecommerce2/admin/products", icon: Shirt },
   { label: "Cadastrar produto", href: "/templates/ecommerce2/admin/new", icon: PlusCircle },
   { label: "Relatórios", href: "/templates/ecommerce2/sales-dashboard", icon: LineChart },
+  { label: "Finance", href: "/templates/ecommerce2/admin/finance", icon: Wallet },
 ];
 
 const SUPPORT_LINKS = [
