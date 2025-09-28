@@ -6,6 +6,11 @@ import { gaEvent } from '@/lib/analytics';
 
 export default function ThankYouPage() {
   useEffect(() => {
+    // Clear client cart keys after success
+    try {
+      localStorage.removeItem('e2.cart');
+      localStorage.removeItem('e2.coupon');
+    } catch {}
     gaEvent('purchase', {
       value: 1,
       currency: 'BRL',

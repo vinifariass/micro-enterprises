@@ -6,7 +6,7 @@ import { ChevronUp, ChevronDown } from "lucide-react";
 export type FiltersState = {
   categories: string[];
   brands: string[];
-  // Future: colors, sizes, rating
+  priceRange: [number, number];
 };
 
 type FiltersProps = {
@@ -15,52 +15,108 @@ type FiltersProps = {
   onClose?: () => void;
   allCategories: string[];
   allBrands: string[];
+  priceBounds?: [number, number];
 };
 
-export default function Filters({ values, onChange, onClose, allCategories, allBrands }: FiltersProps) {
+export default function Filters({ values, onChange, onClose, allCategories, allBrands, priceBounds }: FiltersProps) {
   const [open, setOpen] = React.useState({
     categories: true,
     brands: true,
+    price: true,
     colors: true,
     sizes: true,
     rating: true,
   });
+  const [range, setRange] = React.useState<[number, number]>(values.priceRange);
 
-  const toggleIn = (key: keyof FiltersState, value: string) => {
-    const set = new Set(values[key]);
+  React.useEffect(() => {
+    setRange(values.priceRange);
+  }, [values.priceRange]);
+
+  const toggleIn = (key: keyof FiltersState) => (value: string) => {
+    const set = new Set(values[key] as string[]);
     if (set.has(value)) set.delete(value);
     else set.add(value);
     onChange({ ...values, [key]: Array.from(set) });
   };
 
+  const handleRangeChange = (next: [number, number]) => {
+    setRange(next);
+    onChange({ ...values, priceRange: next });
+  };
+
+  const minPrice = priceBounds?.[0] ?? 0;
+  const maxPrice = priceBounds?.[1] ?? 1000;
+
   return (
     <aside className="w-64 shrink-0">
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-lg font-semibold">Filters</h2>
+        <h2 className="text-lg font-semibold">Filtros</h2>
         {onClose && (
           <button onClick={onClose} className="rounded-md border px-2.5 py-1.5 text-sm hover:bg-accent hover:text-accent-foreground lg:hidden">
-            Close
+            Fechar
           </button>
         )}
       </div>
 
       <div className="space-y-1">
+        {/* Price */}
+        <section className="w-full">
+          <div className="flex items-center justify-between py-2">
+            <h3 className="text-sm font-medium">Preço</h3>
+            <button type="button" onClick={() => setOpen((o) => ({ ...o, price: !o.price }))} className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground">
+              {open.price ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            </button>
+          </div>
+          {open.price && (
+            <div className="pb-4">
+              <div className="text-xs text-muted-foreground">R$ {range[0].toFixed(0)} - R$ {range[1].toFixed(0)}</div>
+              <div className="mt-3 space-y-2">
+                <input
+                  type="range"
+                  min={minPrice}
+                  max={maxPrice}
+                  value={range[0]}
+                  onChange={(e) => {
+                    const nextMin = Math.min(Number(e.target.value), range[1] - 10);
+                    handleRangeChange([nextMin, range[1]]);
+                  }}
+                  className="w-full"
+                />
+                <input
+                  type="range"
+                  min={minPrice}
+                  max={maxPrice}
+                  value={range[1]}
+                  onChange={(e) => {
+                    const nextMax = Math.max(Number(e.target.value), range[0] + 10);
+                    handleRangeChange([range[0], nextMax]);
+                  }}
+                  className="w-full"
+                />
+              </div>
+            </div>
+          )}
+        </section>
+
+        <div className="bg-border h-px w-full" />
+
         {/* Categories */}
         <section className="w-full">
           <div className="flex items-center justify-between py-2">
-            <h3 className="text-sm font-medium">Categories</h3>
-            <button type="button" onClick={() => setOpen(o => ({ ...o, categories: !o.categories }))} className="h-8 w-8 p-0 inline-flex items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground">
+            <h3 className="text-sm font-medium">Categorias</h3>
+            <button type="button" onClick={() => setOpen((o) => ({ ...o, categories: !o.categories }))} className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground">
               {open.categories ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
             </button>
           </div>
           {open.categories && (
             <div className="pb-4 space-y-2">
-              {allCategories.map(cat => (
+              {allCategories.map((cat) => (
                 <label key={cat} className="flex items-center space-x-2">
                   <input
                     type="checkbox"
                     checked={values.categories.includes(cat)}
-                    onChange={() => toggleIn("categories", cat)}
+                    onChange={() => toggleIn("categories")(cat)}
                     className="size-4 rounded border-input"
                   />
                   <span className="text-sm">{cat}</span>
@@ -75,19 +131,19 @@ export default function Filters({ values, onChange, onClose, allCategories, allB
         {/* Brands */}
         <section className="w-full">
           <div className="flex items-center justify-between py-2">
-            <h3 className="text-sm font-medium">Brands</h3>
-            <button type="button" onClick={() => setOpen(o => ({ ...o, brands: !o.brands }))} className="h-8 w-8 p-0 inline-flex items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground">
+            <h3 className="text-sm font-medium">Marcas</h3>
+            <button type="button" onClick={() => setOpen((o) => ({ ...o, brands: !o.brands }))} className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground">
               {open.brands ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
             </button>
           </div>
           {open.brands && (
             <div className="pb-4 space-y-2">
-              {allBrands.map(brand => (
+              {allBrands.map((brand) => (
                 <label key={brand} className="flex items-center space-x-2">
                   <input
                     type="checkbox"
                     checked={values.brands.includes(brand)}
-                    onChange={() => toggleIn("brands", brand)}
+                    onChange={() => toggleIn("brands")(brand)}
                     className="size-4 rounded border-input"
                   />
                   <span className="text-sm">{brand}</span>
@@ -102,8 +158,8 @@ export default function Filters({ values, onChange, onClose, allCategories, allB
         {/* Colors (UI only for now) */}
         <section className="w-full">
           <div className="flex items-center justify-between py-2">
-            <h3 className="text-sm font-medium">Colors</h3>
-            <button type="button" onClick={() => setOpen(o => ({ ...o, colors: !o.colors }))} className="h-8 w-8 p-0 inline-flex items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground">
+            <h3 className="text-sm font-medium">Cores</h3>
+            <button type="button" onClick={() => setOpen((o) => ({ ...o, colors: !o.colors }))} className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground">
               {open.colors ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
             </button>
           </div>
@@ -125,8 +181,8 @@ export default function Filters({ values, onChange, onClose, allCategories, allB
         {/* Sizes (UI only for now) */}
         <section className="w-full">
           <div className="flex items-center justify-between py-2">
-            <h3 className="text-sm font-medium">Sizes</h3>
-            <button type="button" onClick={() => setOpen(o => ({ ...o, sizes: !o.sizes }))} className="h-8 w-8 p-0 inline-flex items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground">
+            <h3 className="text-sm font-medium">Tamanhos</h3>
+            <button type="button" onClick={() => setOpen((o) => ({ ...o, sizes: !o.sizes }))} className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground">
               {open.sizes ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
             </button>
           </div>
@@ -144,24 +200,24 @@ export default function Filters({ values, onChange, onClose, allCategories, allB
         {/* Rating (UI only for now) */}
         <section className="w-full">
           <div className="flex items-center justify-between py-2">
-            <h3 className="text-sm font-medium">Rating</h3>
-            <button type="button" onClick={() => setOpen(o => ({ ...o, rating: !o.rating }))} className="h-8 w-8 p-0 inline-flex items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground">
+            <h3 className="text-sm font-medium">Avaliações</h3>
+            <button type="button" onClick={() => setOpen((o) => ({ ...o, rating: !o.rating }))} className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground">
               {open.rating ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
             </button>
           </div>
           {open.rating && (
             <div className="pb-4 space-y-2 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
-                <StarRow count={4} /> <span>&amp; Up</span>
+                <StarRow count={4} /> <span>&amp; acima</span>
               </div>
               <div className="flex items-center gap-2">
-                <StarRow count={3} /> <span>&amp; Up</span>
+                <StarRow count={3} /> <span>&amp; acima</span>
               </div>
               <div className="flex items-center gap-2">
-                <StarRow count={2} /> <span>&amp; Up</span>
+                <StarRow count={2} /> <span>&amp; acima</span>
               </div>
               <div className="flex items-center gap-2">
-                <StarRow count={1} /> <span>&amp; Up</span>
+                <StarRow count={1} /> <span>&amp; acima</span>
               </div>
             </div>
           )}
@@ -182,3 +238,5 @@ function StarRow({ count }: { count: number }) {
     </div>
   );
 }
+
+

@@ -1,4 +1,5 @@
 import BackToTemplates from "@/components/BackToTemplates";
+import StorefrontChrome from "./StorefrontChrome";
 import Storefront from "./view";
 
 export const metadata = {
@@ -8,9 +9,9 @@ export const metadata = {
 
 export default function Page() {
   return (
-    <div>
+    <StorefrontChrome>
       <BackToTemplates />
       <Storefront />
-    </div>
+    </StorefrontChrome>
   );
 }

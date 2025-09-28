@@ -1,103 +1,97 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { PRODUCTS } from "../catalog";
 
-const rows = PRODUCTS.map((p, i) => ({
-  id: p.id,
-  name: p.name,
-  price: p.price,
-  sku: ("SKU" + (1000 + i)).toUpperCase(),
-  stock: (i * 7) % 30,
+const ROWS = PRODUCTS.map((product, index) => ({
+  id: product.id,
+  name: product.name,
+  price: product.price,
+  sku: `SKU${(1000 + index).toString()}`,
+  stock: (index * 7) % 32,
+  status: index % 4 === 0 ? "Esgotado" : index % 5 === 0 ? "Pausado" : "Ativo",
+  image: product.image,
+  category: /tee/i.test(product.name) ? "Apparel" : "Sneakers",
   rating: 4.6,
-  status: (i % 3 === 0 ? "out of stock" : i % 5 === 0 ? "closed for sale" : "active") as
-    | "active"
-    | "out of stock"
-    | "closed for sale",
-  image: p.image,
-  category: /tee/i.test(p.name) ? "Apparel" : "Electronics",
 }));
+
+const STATUS_STYLES: Record<string, string> = {
+  Ativo: "border-emerald-200 bg-emerald-50 text-emerald-700",
+  Esgotado: "border-amber-200 bg-amber-50 text-amber-700",
+  Pausado: "border-gray-200 bg-gray-50 text-gray-600",
+};
 
 export default function ProductsTable() {
   return (
-    <main className="bg-white text-gray-900">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold tracking-tight">Products</h1>
-          <a
-            className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] bg-black text-white shadow-xs hover:bg-black/90 h-9 px-4 py-2"
-            href="#"
-          >
-            Add Product
-          </a>
+    <div className="space-y-6">
+      <header className="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <h1 className="text-xl font-semibold text-gray-900">Catálogo de produtos</h1>
+          <p className="text-xs text-gray-500">Gerencie estoque, preços e status antes de publicar novos drops.</p>
         </div>
+        <Link
+          href="/templates/ecommerce2/admin/new"
+          className="inline-flex items-center rounded-full bg-black px-5 py-2 text-sm font-semibold text-white transition hover:bg-black/90"
+        >
+          Novo produto
+        </Link>
+      </header>
 
-        <div className="rounded-lg border mt-6 overflow-x-auto">
-          <table className="w-full caption-bottom text-sm">
-            <thead>
-              <tr className="border-b">
-                <th className="h-10 px-2 text-left font-medium">Name</th>
-                <th className="h-10 px-2 text-left font-medium">Price</th>
-                <th className="h-10 px-2 text-left font-medium">Category</th>
-                <th className="h-10 px-2 text-left font-medium">Stock</th>
-                <th className="h-10 px-2 text-left font-medium">SKU</th>
-                <th className="h-10 px-2 text-left font-medium">Rating</th>
-                <th className="h-10 px-2 text-left font-medium">Status</th>
-                <th className="h-10 px-2 text-left font-medium"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((r) => (
-                <tr key={r.id} className="border-b hover:bg-gray-50">
-                  <td className="p-2 align-middle whitespace-nowrap">
-                    <div className="flex items-center gap-3">
-                      {r.image && (
-                        <figure className="rounded border overflow-hidden">
-                          <Image alt={r.name} src={r.image} width={48} height={48} />
-                        </figure>
-                      )}
-                      <div className="capitalize">{r.name}</div>
+      <div className="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm">
+        <table className="w-full table-fixed text-sm">
+          <thead className="bg-gray-50/80 text-left text-xs uppercase tracking-[0.2em] text-gray-500">
+            <tr>
+              <th className="px-4 py-3">Produto</th>
+              <th className="px-4 py-3">Preço</th>
+              <th className="px-4 py-3">Categoria</th>
+              <th className="px-4 py-3">Estoque</th>
+              <th className="px-4 py-3">SKU</th>
+              <th className="px-4 py-3">Status</th>
+              <th className="px-4 py-3 text-right">Ações</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-100">
+            {ROWS.map((row) => (
+              <tr key={row.id} className="hover:bg-gray-50/80">
+                <td className="px-4 py-4">
+                  <div className="flex items-center gap-3">
+                    {row.image && (
+                      <figure className="size-12 overflow-hidden rounded-xl border border-gray-200 bg-gray-50">
+                        <Image src={row.image} alt={row.name} width={96} height={96} className="h-full w-full object-cover" />
+                      </figure>
+                    )}
+                    <div>
+                      <p className="font-medium text-gray-900">{row.name}</p>
+                      <p className="text-xs text-gray-500">Rating {row.rating.toFixed(1)}</p>
                     </div>
-                  </td>
-                  <td className="p-2 align-middle">${"" + r.price.toFixed(2)}</td>
-                  <td className="p-2 align-middle">{r.category}</td>
-                  <td className="p-2 align-middle">{r.stock}</td>
-                  <td className="p-2 align-middle">{r.sku}</td>
-                  <td className="p-2 align-middle">
-                    <div className="flex items-center gap-1">★ {r.rating.toFixed(2)}</div>
-                  </td>
-                  <td className="p-2 align-middle">
-                    <span
-                      className={
-                        "inline-flex items-center justify-center rounded-md px-2 py-0.5 text-xs font-medium border capitalize " +
-                        (r.status === "active"
-                          ? "border-green-400 bg-green-50 text-green-800"
-                          : r.status === "out of stock"
-                          ? "border-orange-400 bg-orange-50 text-orange-800"
-                          : "border-red-400 bg-red-50 text-red-800")
-                      }
-                    >
-                      {r.status}
-                    </span>
-                  </td>
-                  <td className="p-2 align-middle">
-                    <button className="inline-flex items-center justify-center rounded-md h-8 w-8 hover:bg-gray-100">
-                      ⋯
+                  </div>
+                </td>
+                <td className="px-4 py-4 font-medium text-gray-900">R$ {row.price.toFixed(2)}</td>
+                <td className="px-4 py-4 text-gray-700">{row.category}</td>
+                <td className="px-4 py-4 text-gray-700">{row.stock}</td>
+                <td className="px-4 py-4 text-gray-700">{row.sku}</td>
+                <td className="px-4 py-4">
+                  <span className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold ${STATUS_STYLES[row.status]}`}>
+                    {row.status}
+                  </span>
+                </td>
+                <td className="px-4 py-4 text-right">
+                  <div className="inline-flex items-center gap-2">
+                    <button className="rounded-full border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-600 transition hover:border-black hover:text-black">
+                      Editar
                     </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        <div className="mt-4 flex items-center justify-end gap-2">
-          <button className="border rounded-md h-8 px-3 text-sm" disabled>
-            Previous
-          </button>
-          <button className="border rounded-md h-8 px-3 text-sm">Next</button>
-        </div>
+                    <button className="rounded-full border border-red-200 px-3 py-1 text-xs font-semibold text-red-600 transition hover:border-red-400">
+                      Arquivar
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
-    </main>
+    </div>
   );
 }
+

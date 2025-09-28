@@ -39,11 +39,12 @@ export function Sidebar({ className, children }: { className?: string; children:
   );
 }
 
-export function SidebarHeader({ className }: { className?: string }) {
+export function SidebarHeader({ className, children }: { className?: string; children?: React.ReactNode }) {
   const ctx = React.useContext(SidebarContext)!;
+  const hasChildren = React.Children.count(children) > 0;
   return (
     <div className={cn("flex items-center justify-between border-b px-4 py-3", className)}>
-      <div className={cn("font-semibold transition-opacity", ctx.collapsed && "opacity-0 pointer-events-none")}>Shadcn UI Kit</div>
+      <div className={cn("flex-1 font-semibold transition-opacity", ctx.collapsed && "opacity-0 pointer-events-none")}>{hasChildren ? children : "Shadcn UI Kit"}</div>
       <button
         className="inline-flex items-center justify-center rounded-md border px-2.5 py-2 text-sm shadow-xs hover:bg-accent hover:text-accent-foreground"
         onClick={() => ctx.setCollapsed(!ctx.collapsed)}
@@ -69,14 +70,16 @@ export function SidebarGroup({ title, children }: { title: string; children?: Re
   );
 }
 
-export function SidebarItem({ icon: Icon, label, href = "#" }: { icon?: React.ComponentType<{ className?: string }>; label: string; href?: string }) {
+export function SidebarItem({ icon: Icon, label, href = "#", className, isActive }: { icon?: React.ComponentType<{ className?: string }>; label: string; href?: string; className?: string; isActive?: boolean }) {
   const ctx = React.useContext(SidebarContext)!;
   return (
     <a
       href={href}
+      data-active={isActive ? "true" : undefined}
       className={cn(
-        "group flex items-center gap-3 rounded-md px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground transition-colors",
-        ctx.collapsed && "justify-center"
+        "group flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors data-[active=true]:bg-black data-[active=true]:text-white hover:bg-accent hover:text-accent-foreground",
+        ctx.collapsed && "justify-center",
+        className,
       )}
     >
       {Icon && <Icon className="size-4" />}

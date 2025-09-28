@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { PRODUCTS, type Product } from "./catalog";
 import type { Coupon, Category } from "./types";
 import { COUPONS, PROMOTIONS } from "./data/promotions";
@@ -31,15 +31,54 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [coupon, setCoupon] = useState<Coupon | undefined>(undefined);
 
+  // Load from localStorage on mount
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("e2.cart");
+      if (raw) {
+        const parsed = JSON.parse(raw) as CartItem[];
+        if (Array.isArray(parsed)) setItems(parsed);
+      }
+      const couponCode = localStorage.getItem("e2.coupon");
+      if (couponCode) {
+        const found = COUPONS.find((c) => c.code.toLowerCase() === couponCode.toLowerCase());
+        if (found) setCoupon(found);
+      }
+    } catch {}
+  }, []);
+  // Persist to localStorage
+  useEffect(() => {
+    try { localStorage.setItem("e2.cart", JSON.stringify(items)); } catch {}
+  }, [items]);
+  useEffect(() => {
+    try {
+      if (coupon?.code) localStorage.setItem("e2.coupon", coupon.code);
+      else localStorage.removeItem("e2.coupon");
+    } catch {}
+  }, [coupon]);
+
   const add = (id: string, qty = 1, sku?: string) =>
     setItems((curr) => {
+      // Enforce stock for SKU variants
+      let allowedQty = qty;
+      if (sku) {
+        const p = PRODUCTS.find((x) => x.id === id);
+        const v = p?.variants?.find((vv) => vv.sku === sku);
+        if (v) {
+          const currentQty = curr.find((x) => x.id === id && x.sku === sku)?.qty ?? 0;
+          const remaining = (v.stock ?? 0) - currentQty;
+          if (remaining <= 0) return curr; // nothing to add
+          allowedQty = Math.min(qty, Math.max(0, remaining));
+        }
+      }
+      if (allowedQty <= 0) return curr;
       const i = curr.findIndex((x) => x.id === id && x.sku === (sku ?? x.sku));
       if (i >= 0) {
         const copy = [...curr];
-        copy[i] = { ...copy[i], qty: copy[i].qty + qty };
+        copy[i] = { ...copy[i], qty: copy[i].qty + allowedQty };
         return copy;
-        }
-      return [...curr, { id, qty, sku }];
+      }
+      return [...curr, { id, qty: allowedQty, sku }];
     });
 
   const dec = (id: string, sku?: string) =>
