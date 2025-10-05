@@ -6,7 +6,6 @@ import { useMemo } from "react";
 import { format } from "date-fns";
 import type { DateRange } from "react-day-picker";
 import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -14,7 +13,8 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { CARETAKERS, type Caretaker } from "./data";
 import { cn } from "@/lib/utils";
-import { MapPin, Star, Filter, CalendarRange, Search } from "lucide-react";
+import { MapPin, Star, Filter, CalendarRange } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 const DynamicMap = dynamic(() => import("./LeafletMap").then((mod) => mod.LeafletMap), {
@@ -255,7 +255,13 @@ export default function PetCareView() {
             {filteredCaretakers.map((caretaker) => (
               <Card key={caretaker.id} className="flex flex-col overflow-hidden border-slate-200 bg-white/90">
                 <div className="relative h-48 w-full">
-                  <img src={caretaker.photo} alt={caretaker.name} className="h-full w-full object-cover" />
+                  <Image
+                    src={caretaker.photo}
+                    alt={caretaker.name}
+                    fill
+                    sizes="(min-width: 768px) 384px, 100vw"
+                    className="object-cover"
+                  />
                 </div>
                 <CardContent className="flex flex-1 flex-col gap-4 p-6">
                   <div className="flex items-start justify-between gap-3">
