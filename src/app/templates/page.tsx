@@ -61,6 +61,14 @@ const items = [
     badge: "Aplicacao",
     screenshot: "https://s.wordpress.com/mshots/v1/https://pet-care-template.vercel.app/?w=1200",
   },
+  {
+    slug: "brboat",
+    title: "MarAzul Experiences",
+    desc: "Landing premium com hero em video, experiencias e concierge dedicado.",
+    badge: "Luxury",
+    screenshot: "https://images.unsplash.com/photo-1520256862855-398228c41684?auto=format&fit=crop&w=1200&q=80",
+  },
+
 ];
 
 const filters = ["Todos", "E-commerce", "Portfolio", "Blog", "Aplicacao"];

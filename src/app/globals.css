@@ -500,3 +500,27 @@ input[type=range]::-ms-thumb {
 #searchbar-container { position: relative; z-index: 1100; }
 .suggestions-panel { border-radius: 1rem; box-shadow: 0 10px 30px rgba(0,0,0,.15); z-index: 1300; }
 
+@keyframes fade-in-up {
+  0% {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes card-shine {
+  0% {
+    transform: skewX(-15deg) translateX(-150%);
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.45;
+  }
+  100% {
+    transform: skewX(-15deg) translateX(200%);
+    opacity: 0;
+  }
+}

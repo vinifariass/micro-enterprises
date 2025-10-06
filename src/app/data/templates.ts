@@ -49,4 +49,14 @@ export const templates: TemplateItem[] = [
     badge: "Blog",
     image: "/images/streetwear/adidas-grey-gum.jpg",
   },
+  {
+    slug: "brboat",
+    title: "MarAzul Experiences",
+    desc: "Hero em video, secoes luminosas e galeria premium com efeitos 3D.",
+    badge: "Luxury",
+    image: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=640&q=80",
+  },
 ];
+
+
+
