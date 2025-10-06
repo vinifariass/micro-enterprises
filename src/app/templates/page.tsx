@@ -66,7 +66,7 @@ const items = [
     title: "MarAzul Experiences",
     desc: "Landing premium com hero em video, experiencias e concierge dedicado.",
     badge: "Luxury",
-    screenshot: "https://images.unsplash.com/photo-1520256862855-398228c41684?auto=format&fit=crop&w=1200&q=80",
+    screenshot: "https://naveguetemporada.com/wp-content/uploads/2024/09/Lancha-Focker-255-Cara-Mia-6-800x533.jpg",
   },
 
 ];
